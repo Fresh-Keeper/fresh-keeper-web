@@ -23,7 +23,7 @@ def refrigerator():
 
 #3 물품 보여주는 api--------------------------------------------------------------------
 @app.route('/foods',methods=['POST'])
-def showFoodsList():
+def showFoodList():
    category_receive = request.form['category_give']
    user_id_receive = request.form['user_id_give']
    
@@ -39,7 +39,7 @@ def showFoodsList():
 
 #3 추천 리스트 보여주는 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])
-def showFoodsList():
+def showKeywordList():
    user_id_receive = request.form['user_id_give']
    
    # 개수가 0인 키워드 리스트 생성
