@@ -21,6 +21,9 @@ def login():
 # 회원가입 페이지
 @app.route('/signup')
 def signup():
+   print("hello")
+   
+
    return render_template('signup.html')
 
 # 냉장고 페이지
