@@ -20,7 +20,7 @@ def login():
    return render_template('login.html')
    
 # [로그인 API]
-@app.route('/login', method=['POST'])
+@app.route('/login', methods=['POST'])
 def user_login():
     id_receive = request.form['id_give']
     pw_receive = request.form['pw_give']
@@ -118,7 +118,7 @@ def show_food_list():
                                {}))
    
    for food in result:
-      food['food_remained_date']=int(food['food_purchase_date'])-int(food['food_limited_date'])
+      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
