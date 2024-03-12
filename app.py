@@ -171,8 +171,19 @@ def add_food():
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
 
+# 3-3 물품 상세 정보
+@app.route('/foods/detail', methods=['POST'])
+def show_food_detail():
+   food_id_receive = request.form['food_id_give'] 
+   new_food_id = ObjectId(food_id_receive)
+   food_detail = db.foods.find_one({'_id': new_food_id}, {"_id":0})
+   
+   if not food_detail:
+      return jsonify({'error': '존재하지 않는 정보 요청'})
+   
+   food_detail['food_remained_date'] = int(food_detail['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
 
-
+   return jsonify({'result': 200, 'food_detail': food_detail})
 
 if __name__ == '__main__':  
    app.run('0.0.0.0',port=5001,debug=True)
