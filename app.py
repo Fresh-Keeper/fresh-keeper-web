@@ -1,4 +1,5 @@
-from pymongo import MongoClient
+from pymongo import MongoClient 
+from bson.objectid import ObjectId
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
    
@@ -43,15 +44,22 @@ def refrigerator():
 
 #3 물품 보여주는 api--------------------------------------------------------------------
 @app.route('/foods',methods=['POST'])
-def showFoodList():
+def show_food_list():
+
    category_receive = request.form['category_give']
    user_id_receive = request.form['user_id_give']
    
+   # 물품의 정보 리스트 생성 + 남은 기간 계산
    result = list(db.foods.find({'food_category':category_receive,'user_id':user_id_receive},
-                               {"food_id":1,"food_name":1,"food_purchase_date":1,"food_limited_date":1}))
+                               {}))
+   
    for food in result:
-      food['food_remained_date']=food['food_purchase_date']-food['food_limited_date']
-
+      food['food_remained_date']=int(food['food_purchase_date'])-int(food['food_limited_date'])
+      # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
+      # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
+      food['_id'] = str(food['_id'])
+      
+      
    if(len(result)==0):
       return jsonify({'result': 400, 'food_list': result})
    else :    
@@ -59,20 +67,48 @@ def showFoodList():
 
 #3 추천 리스트 보여주는 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])
-def showKeywordList():
+def show_keyword_list():
+
    user_id_receive = request.form['user_id_give']
-   
+   print(user_id_receive)
    # 개수가 0인 키워드 리스트 생성
-   # '_id':0,'user_id':1
-   keywords = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'user_id':1}))
-   foods = list(db.keywords.find({'user_id':user_id_receive},{'_id':0,'user_id':1}))
+   #todo : type error
+   keywords = list(db.keywords.find({'user_id':user_id_receive},{'_id':0,'keyword':1}))
+   foods = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'food_name':1}))
+   print("-----------------")
+   print(keywords)
+   foods = set(foods)
+   print(foods)
+   print("-----------------")
    keywords_not_exist = list(set(keywords) - set(foods))
 
    if(len(keywords_not_exist)==0):
       return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
    else:
       return jsonify({'result': 200, 'keyword_list': keywords_not_exist})
-#------------------------------------------------------------------------------------
+#3-1 물품 추가 api ---------------------------------------------------------------------
+@app.route('/foods/add',methods=['POST'])
+def add_food():
+   food_name_receive = request.form['food_name_give']
+   food_purchase_date_receive = request.form['food_purchase_date_give']
+   food_limited_date_receive = request.form['food_limited_date_give']
+   food_amount_receive = request.form['food_amount_give']
+   user_id_receive = request.form['user_id_give']
+   food_category_receive= request.form['food_category_give']
+
+   food={'food_name':food_name_receive,
+         'food_purchase_date':food_purchase_date_receive,
+         'food_limited_date':food_limited_date_receive,
+         'food_amount':food_amount_receive,
+         'food_category':food_category_receive,
+         'user_id':user_id_receive
+         }
+   
+   db.foods.insert_one(food)
+   return jsonify({'result': 'success'})
+
+
+
 
 if __name__ == '__main__':  
    app.run('0.0.0.0',port=5001,debug=True)
