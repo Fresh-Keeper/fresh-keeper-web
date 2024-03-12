@@ -185,5 +185,15 @@ def show_food_detail():
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 
+# 물품 수량 증감 -> 클라이언트에서 기존 수량 증감해서 update_amount_give로 보냄 -> 서버에서는 해당 amount를 db에 update하기만 하도록 함.
+@app.route('/foods/detail/amount', methods=['PUT'])
+def update_food_amount():
+   food_id_receive = request.form['food_id_give']
+   update_amount_receive = request.form['update_amount_give']
+
+   db.foods.update_one({'_id': ObjectId(food_id_receive)}, {'$set': {'food_amount': update_amount_receive}})
+   return jsonify({'result': 200})
+   
+
 if __name__ == '__main__':  
    app.run('0.0.0.0',port=5001,debug=True)
