@@ -12,5 +12,11 @@
   - window의 경우 명령어 : .venv/bin/activate
   - macos의 경우 명령어 : source .venv/bin/activate
 - app.py의 포트번호
-  - window의 경우 : 5000
-  - macos의 경우 : 5001
+  - 5001
+
+### 가상환경 관련
+
+- venv 라이브러리 로드 명령어
+  - pip install -r requirements.txt
+- requirements.txt 업로드 명령어
+  - pip freeze > requirements.txt
