@@ -2,13 +2,6 @@ from pymongo import MongoClient
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
 
-# doc = {
-#     'user_id':'id',
-#     'user_pw':"password",
-#     'user_nickname':'forrest'
-# }
-
-# db.users.insert_one(doc)
 
 from flask import Flask, render_template
 app = Flask(__name__)
@@ -21,9 +14,6 @@ def login():
 # 회원가입 페이지
 @app.route('/signup')
 def signup():
-   print("hello")
-   
-
    return render_template('signup.html')
 
 # 냉장고 페이지
