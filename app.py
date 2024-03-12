@@ -32,8 +32,8 @@ def upload_user():
    user_id_receive = request.form['user_id_give']
    user_pw_receive = request.form['user_pw_give']
    user_nickname_receive = request.form['user_nickname_give']
-   id_dup_check = list(db.users.find({'user_id': user_id_receive}))
-   if id_dup_check:
+   is_dup_id = list(db.users.find({'user_id': user_id_receive}))
+   if is_dup_id:
       return jsonify({'error': 409})
    
    user_pw_hash = bcrypt.generate_password_hash(user_pw_receive)
@@ -46,6 +46,26 @@ def upload_user():
 def refrigerator():
    return render_template('main.html') # todo: send userName
 
+# 3-2 키워드 관리
+# 키워드 추가
+@app.route('/keywords/add', methods=['POST'])
+def add_keyword():
+   keyword_receive = request.form['keyword_give']
+   user_id_receive = request.form['user_id_give']
+   is_dup_keyword = list(db.keywords.find({'keyword': keyword_receive, 'user_id': user_id_receive}))
+   if is_dup_keyword:
+      return jsonify({'error': '이미 존재하는 키워드 요청'})
+   new_keyword = {'keyword': keyword_receive, 'user_id': user_id_receive}
+   db.keywords.insert_one(new_keyword)
+   return jsonify({'result': 200})
+
+# 키워드 삭제
+@app.route('/keywords/delete', methods=['POST'])
+def delete_keyword():
+   keyword_receive = request.form['keyword_give']
+   user_id_receive = request.form['user_id_give']
+   db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
+   return jsonify({'result': 200})
    
 if __name__ == '__main__':  
    app.run('0.0.0.0',port=5001,debug=True)
