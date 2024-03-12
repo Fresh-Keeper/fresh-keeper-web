@@ -135,16 +135,12 @@ def show_keyword_list():
 
    user_id_receive = request.form['user_id_give']
    print(user_id_receive)
+   
    # 개수가 0인 키워드 리스트 생성
-   #todo : type error
    keywords = list(db.keywords.find({'user_id':user_id_receive},{'_id':0,'keyword':1}))
-   foods = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'food_name':1}))
-   print("-----------------")
-   print(keywords)
-   foods = set(foods)
-   print(foods)
-   print("-----------------")
-   keywords_not_exist = list(set(keywords) - set(foods))
+   foods = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'food_name':1}))   
+   food_names = set(food['food_name'] for food in foods)
+   keywords_not_exist = [keyword for keyword in keywords if keyword['keyword'] not in food_names]
 
    if(len(keywords_not_exist)==0):
       return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
