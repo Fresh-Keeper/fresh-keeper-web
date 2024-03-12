@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>The Fresh Keeper</title>
+  </head>
+  <body class="bg-background">
+    <header class="container mx-auto mt-40 mb-60">
+      <p class="text-center text-7xl font-bold text-basic">The Fresh Keeper</p>
+      <p class="text-center text-3xl text-dark">냉장고 관리 도우미</p>
+    </header>
+
+    <div class="container mx-auto px-60">
+      <div class="p-2 rounded-2xl bg-white">
+        <div>
+          <div class="mt-2">
+            <input
+              type="text"
+              placeholder="ID"
+              name="user-id"
+              class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="mt-2">
+            <input
+              type="password"
+              placeholder="PW"
+              name="user-pw"
+              class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div class="mt-2">
+          <input
+            type="submit"
+            value="로그인"
+            id="btn-login"
+            class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6 bg-basic text-white"
+          />
+        </div>
+        <div class="mt-2 text-center text-basic">
+          <a href="/signup">회원가입</a>
+          <!--링크 바꾸기-->
+        </div>
+      </div>
+    </div>
+
+    <script src="../static/js/tailwind.config.js"></script>
+  </body>
+</html>

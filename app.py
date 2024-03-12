@@ -10,23 +10,23 @@ db = client.fresh_keeper
 
 # db.users.insert_one(doc)
 
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 # 로그인 페이지
-@app.route('/login')
+@app.route('/')
 def login():
-   return 'This is LogIn!'
+   return render_template('login.html')
 
 # 회원가입 페이지
 @app.route('/signup')
 def signup():
-   return 'This is SignUP!'
+   return render_template('signup.html')
 
 # 냉장고 페이지
 @app.route('/refrigerator')
 def refrigerator():
-   return 'This is Refrigerator!'
+   return render_template('main.html') # todo: send userName
 
    
 if __name__ == '__main__':  
