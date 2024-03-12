@@ -1,18 +1,23 @@
 from pymongo import MongoClient
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 import datetime
 import jwt
 app = Flask(__name__)
 
-
 SECRET_KEY = 'this is key' # 토큰 암호화할 key 세팅
 app.config['SECRET_KEY'] = 'secretKey'
 app.config['BCRYPT_LEVEL'] = 10
 bcrypt = Bcrypt(app)
+
+# 로그인 페이지
+@app.route('/')
+def login():
+   return render_template('login.html')
+   
 # [로그인 API]
 @app.route('/login', method=['POST'])
 def user_login():
@@ -54,6 +59,12 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
+# 회원가입 페이지
+@app.route('/signup')
+def signup():
+   return render_template('signup.html')
+
+# 회원가입 API
 @app.route('/signup', methods=['POST'])
 def upload_user():
    user_id_receive = request.form['user_id_give']
