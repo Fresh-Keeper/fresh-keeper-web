@@ -7,5 +7,9 @@
 
 ### 주의사항
 
-- window의 경우 명령어 : .venv/bin/activate
-- macos의 경우 명령어 : source .venv/bin/activate
+- venv activate한 후에 프로그램 실행
+  - window의 경우 명령어 : .venv/bin/activate
+  - macos의 경우 명령어 : source .venv/bin/activate
+- app.py의 포트번호
+  - window의 경우 : 5000
+  - macos의 경우 : 5001
