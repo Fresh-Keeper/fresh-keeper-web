@@ -75,9 +75,9 @@
           type: "POST",
           url: "/signup",
           data: {
-            user_id_give: inputName,
-            user_pw_give: inputId,
-            user_nickname_give: inputPw,
+            user_id_give: inputId,
+            user_pw_give: inputPw,
+            user_nickname_give: inputName,
           },
           success: function (response) {
             if (response["result"] == 200) {
