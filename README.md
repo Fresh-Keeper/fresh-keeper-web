@@ -4,6 +4,7 @@
 
 1. pymongo
 2. flask -> Jinja2 자동 install
+3. flask_bcrypt
 
 ### 주의사항
 
