@@ -1,4 +1,4 @@
-<div class="bg-white rounded-md h-full" id="middle-box">
+<div class="min-h-full bg-white justify-center items-center" id="middle-box">
   <div class="text-left flex">
     <button
       class="flex-1 box-border h-10 w-30 bg-lime-100 text-gray-300"
@@ -16,7 +16,7 @@
     </button>
   </div>
   <!-- 냉장 물품 리스트 -->
-  <ul id="refrigeration_list" class="overscroll-contain h-[94.5%]">
+  <ul id="refrigeration_list" class="h-[705px] overflow-y-scroll">
     {%for food in cold_food_list%} {% if food["food_remained_date"] > 3 %}
     <li
       class="flex justify-between p-5"
@@ -55,7 +55,7 @@
     {%endfor%}
   </ul>
   <!-- 냉동 물품 리스트 -->
-  <ul id="freeze_list">
+  <ul id="freeze_list" class="overflow-y-scroll">
     {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
     <li
       class="flex justify-between p-5"
@@ -96,7 +96,7 @@
   </ul>
 </div>
 
-<div class="h-[80%] flex justify-center items-center" id="right-box">
+<div class="h-[745px] flex justify-center items-center" id="right-box">
   <div
     class="bg-white mx-5 p-5 rounded-2xl h-full w-full hidden"
     id="food-detail"
