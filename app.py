@@ -99,7 +99,7 @@ def show_food_list(user_id):
    cold_list, freeze_list = list(), list()
    
    for food in result:
-      food['food_remained_date'] = int(food['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
@@ -115,21 +115,20 @@ def show_keyword_list():
    
    # 개수가 0인 키워드 리스트 생성
    keywords = list(db.keywords.find({'user_id':user_id_receive},{'_id':0,'keyword':1}))
-   # keyword_names = set(keyword['keyword'] for keyword in keywords)
+   keyword_names = set(keyword['keyword'] for keyword in keywords)
    foods = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'food_name':1}))   
    food_names = set(food['food_name'] for food in foods)
-   keywords_not_exist = [keyword for keyword in keywords if keyword['keyword'] not in food_names]
-   # keywords_not_exist = keyword_names - food_names
-   # return jsonify({'result': 200, 'keyword_list': list(keywords_not_exist)})
-   if(len(keywords_not_exist)==0):
-      return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
-   else:
-      return jsonify({'result': 200, 'keyword_list': keywords_not_exist})
+   # keywords_not_exist = [keyword for keyword in keywords if keyword['keyword'] not in food_names]
+   keywords_not_exist = keyword_names - food_names
+   return jsonify({'result': 200, 'keyword_list': list(keywords_not_exist)})
+   # if(len(keywords_not_exist)==0):
+   #    return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
+   # else:
+   #    return jsonify({'result': 200, 'keyword_list': keywords_not_exist})
 
 #3-1 물품 추가 api ---------------------------------------------------------------------
 @app.route('/foods/add',methods=['POST'])
 def add_food():
-   print('------------')
    food_name_receive = request.form['food_name_give']
    food_purchase_date_receive = request.form['food_purchase_date_give']
    food_limited_date_receive = request.form['food_limited_date_give']
@@ -144,12 +143,9 @@ def add_food():
          'food_category':food_category_receive,
          'user_id':user_id_receive
          }
-   print(type(food['food_limited_date']))
-   print('------------')
    
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
-
 # 3-2 키워드 관리 ---------------------------------------------------------------------
 # 키워드 추가
 @app.route('/keywords/add', methods=['POST'])
@@ -169,7 +165,7 @@ def delete_keyword():
    keyword_receive = request.form['keyword_give']
    user_id_receive = request.form['user_id_give']
    db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
-   return jsonify({'result': 200 })
+   return jsonify({'result': 200})
 
 # 키워드 표시
 @app.route('/keywords/show',methods=['POST'])
@@ -190,7 +186,7 @@ def show_food_detail():
    if not food_detail:
       return jsonify({'error': '존재하지 않는 정보 요청'})
    
-   food_detail['food_remained_date'] = int(food_detail['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
+   food_detail['food_remained_date'] = int(food_detail['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 
