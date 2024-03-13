@@ -51,8 +51,8 @@
       success: function (response) {
         if (response["result"] == 200) {
           let temp_html = `<li class="flex justify-between mx-5 mt-1">
-                            <span class="text-xl">${inputKeyword}</span>
-                            <button type="button" onclick="del_keyword('${inputKeyword}')">삭제</button>
+                            <span class="text-xl mt-4">${inputKeyword}</span>
+                            <button type="button" onclick="del_keyword class="keyword-item text-red-500 mt-4"('${inputKeyword}')">삭제</button>
                           </li>`;
           $("#show_key").append(temp_html);
         }
@@ -91,8 +91,8 @@
         for (i = 0; i < show_keys.length; i++) {
           let keyword = show_keys[i]["keyword"];
           let temp_html = `<li class="flex justify-between mx-5 mt-1 px-5">
-                            <span class="text-xl">${keyword}</span>
-                            <button type="button" onclick="del_keyword('${keyword}')" class="keyword-item">삭제</button>
+                            <span class="text-xl mt-4">${keyword}</span>
+                            <button type="button" onclick="del_keyword('${keyword}')" class="keyword-item text-red-500 mt-4">삭제</button>
                           </li>`;
           $("#show_key").append(temp_html);
         }
