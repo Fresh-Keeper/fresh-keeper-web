@@ -43,7 +43,7 @@ def user_login():
    # JWT 암호화
    token = jwt.encode(payload,SECRET_KEY, algorithm='HS256')
 
-   return jsonify({'result' : 'success', 'token' : token })
+   return jsonify({'result' : 200, 'nickname': find_user["user_nickname"], 'token' : token })
     
 @app.route('/login/nick', methods=['GET'])
 def api_valid():
@@ -90,22 +90,20 @@ def upload_user():
 @app.route('/refrigerator', methods=['POST'])
 def show_food_list():
 
-   category_receive = request.form['category_give']
    user_id_receive = request.form['user_id_give']
    
    # 물품의 정보 리스트 생성 + 남은 기간 계산
-   result = list(db.foods.find({'food_category':category_receive,'user_id':user_id_receive}, {}))
-   
+   result = list(db.foods.find({'user_id':user_id_receive}, {}))
+   cold_list, freeze_list = list(), list()
+
    for food in result:
       food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
-      
-   if(len(result)==0):
-      return jsonify({'result': 400, 'food_list': result})
-   else :    
-      return render_template('main.html', userName=user_id_receive, food_list=result)
+      cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
+
+      return render_template('index.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
    
 
 #3 추천 리스트 api--------------------------------------------------------------
