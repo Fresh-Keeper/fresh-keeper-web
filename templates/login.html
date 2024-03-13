@@ -1,3 +1,5 @@
+{% extends "index.html" %} {% block head %} {{ super() }} {% endblock %} {%
+block content %}
 <header class="container mx-auto mt-40 mb-60">
   <p class="text-center text-7xl font-bold text-basic">The Fresh Keeper</p>
   <p class="text-center text-3xl text-dark">냉장고 관리 도우미</p>
@@ -44,8 +46,7 @@
 
 <script>
   $("#btn-signup").on("click", function () {
-    $("#login-page").toggleClass("hidden");
-    $("#signup-page").toggleClass("hidden");
+    $(location).attr("href", "/signup");
   });
 
   // 로그인
@@ -100,10 +101,12 @@
           $.ajax({
             type: "POST",
             url: "/refrigerator",
-            data: { user_id_give: currentUser.userId },
+            data: {
+              user_id_give: currentUser.userId,
+              user_nickname_give: currentUser.userNickName,
+            },
             success: function (response) {
-              $("#login-page").addClass("hidden");
-              $("#refrigerator-page").toggleClass("hidden");
+              $(location).attr("href", "/refrigerator");
             },
           });
         });
@@ -118,9 +121,10 @@
       url: "/refrigerator",
       data: { category_give: "냉장", user_id_give: "forrest" },
       success: function (response) {
-        console.log(response);
+        console.log(1);
+        $(location).attr("href", "/refrigerator");
       },
     });
   }
 </script>
-<script src="../static/js/tailwind.config.js"></script>
+{% endblock %}

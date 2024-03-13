@@ -18,26 +18,16 @@ bcrypt = Bcrypt(app)
 
 # 로그인 페이지
 @app.route('/')
-def login():
-   user_id_receive = "test_01"
-   
-   # 물품의 정보 리스트 생성 + 남은 기간 계산
-   cold_food_list = list(db.foods.find({'food_category':"냉장",'user_id':user_id_receive}, {}))
-   
-   for food in cold_food_list:
-      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
-      # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
-      # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
-      food['_id'] = str(food['_id'])
-   
-   frozed_food_list = list(db.foods.find({'food_category':"냉동",'user_id':user_id_receive}, {}))
-   for food in frozed_food_list:
-      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
-      # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
-      # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
-      food['_id'] = str(food['_id'])
-   
-   return render_template('index.html', userName="테스트01", cold_food_list=cold_food_list,frozed_food_list=frozed_food_list)
+def home():
+   return render_template('login.html')
+
+@app.route('/signup')
+def signup():
+   return render_template('signup.html')
+
+@app.route('/refrigerator')
+def main():
+   return render_template('main.html')
    
 # [로그인 API]
 @app.route('/login', methods=['POST'])
@@ -83,11 +73,6 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
-# 회원가입 페이지
-@app.route('/signup')
-def signup():
-   return render_template('signup.html')
-
 # 회원가입 API
 @app.route('/signup', methods=['POST'])
 def upload_user():
@@ -123,7 +108,7 @@ def show_food_list():
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
 
-      return render_template('index.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
+      return render_template('main.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
    
 
 #3 추천 리스트 api--------------------------------------------------------------
