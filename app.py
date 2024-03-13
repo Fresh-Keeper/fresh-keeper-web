@@ -14,6 +14,7 @@ app.config['SECRET_KEY'] = 'secretKey'
 app.config['BCRYPT_LEVEL'] = 10
 bcrypt = Bcrypt(app)
 
+
 # 로그인 페이지
 @app.route('/')
 def login():
@@ -165,7 +166,16 @@ def delete_keyword():
    user_id_receive = request.form['user_id_give']
    db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
    return jsonify({'result': 200})
-   
+
+# 키워드 표시
+@app.route('/keywords/show',methods=['POST'])
+def show_keyword():
+
+   user_id_receive = request.form['user_id_give']
+   print(user_id_receive)
+   result = list(db.keywords.find({},{"_id":False}))
+   return jsonify({'result':'success','show_keys':result})
+
 # 물품 api -------------------------------------------------------------------------
 # 3-3 물품 상세 정보 ---------------------------------------------------------------------
 @app.route('/foods/detail', methods=['POST'])
