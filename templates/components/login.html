@@ -3,7 +3,7 @@
   <p class="text-center text-3xl text-dark">냉장고 관리 도우미</p>
 </header>
 
-<div class="container mx-auto px-60">
+<div class="container mx-auto px-60" id="container-form">
   <div class="p-2 rounded-2xl bg-white">
     <div>
       <div class="mt-2">
@@ -31,7 +31,7 @@
       <input
         type="submit"
         value="로그인"
-        onclick="refrigerator()"
+        onclick="login()"
         id="btn-login"
         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6 bg-basic text-white"
       />
@@ -48,26 +48,67 @@
     $("#signup-page").toggleClass("hidden");
   });
 
-  // 로그인 api response가 안옴
+  // 로그인
+  let currentUser = {
+    userId: null,
+    userNickName: null,
+    userToken: null,
+  };
+
+  function loginInputValidate(inputId, inputPw) {
+    if (inputId == "" && inputPw == "") {
+      $("#user-id").css("border", "1px solid red");
+      $("#user-pw").css("border", "1px solid red");
+      return false;
+    } else if (inputId == "") {
+      $("#user-id").css("border", "1px solid red");
+      return false;
+    } else if (inputPw == "") {
+      $("#user-pw").css("border", "1px solid red");
+      return false;
+    }
+    return true;
+  }
+
   function login() {
     let inputId = $("#user-id").val();
     let inputPw = $("#user-pw").val();
 
-    $.ajax({
-      type: "POST",
-      url: "/login",
-      data: { id_give: inputId, pw_give: inputPw },
-      success: function (response) {
-        if (response["result"] == "success") {
-          console.log("성공");
-          // 1. 로컬스토리지에 사용자 id 저장
-          // 2. {category_give: "냉장", user_id_give: 사용자 id}로 "/refrigerator"로 POST 요청
-          // 3. 서버 측 "/refrigerator" API에서 render_template
-          location.href = "/refrigerator";
-        } else {
-        }
-      },
-    });
+    if (loginInputValidate(inputId, inputPw)) {
+      new Promise((resolve, reject) => {
+        $.ajax({
+          type: "POST",
+          url: "/login",
+          data: { id_give: inputId, pw_give: inputPw },
+          success: function (response) {
+            if (response["result"] == 200) {
+              $("#login-page").toggleClass("hidden");
+              currentUser.userId = inputId;
+              currentUser.userNickName = response["nickname"];
+              currentUser.userToken = response["token"];
+            } else if (response["error"] == 404) {
+              $("#user-id").css("border", "1px solid red");
+              let error = `<span style="color: red">존재하지 않는 아이디 입니다.<span>`;
+              $("#container-form").append(error);
+            } else if (response["error"] == 401) {
+              $("#user-pw").css("border", "1px solid red");
+              let error = `<span style="color: red">비밀번호가 일치하지 않습니다.<span>`;
+              $("#container-form").append(error);
+            }
+          },
+        }).then((arg) => {
+          $.ajax({
+            type: "POST",
+            url: "/refrigerator",
+            data: { user_id_give: currentUser.userId },
+            success: function (response) {
+              $("#login-page").addClass("hidden");
+              $("#refrigerator-page").toggleClass("hidden");
+            },
+          });
+        });
+      });
+    }
   }
 
   // 냉장고 페이지 이동용
