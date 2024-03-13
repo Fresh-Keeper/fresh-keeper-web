@@ -3,18 +3,36 @@ from bson.objectid import ObjectId
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
 
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
+
 from flask import Flask, request, jsonify, render_template
 from flask_bcrypt import Bcrypt
 
 import datetime, base64
+from datetime import timedelta
+
 import jwt
 
 app = Flask(__name__)
+
+CORS(app)
+CORS(app,resource={r'*':{'origins':'*'}})
 
 SECRET_KEY = 'this is key' # 토큰 암호화할 key 세팅
 app.config['SECRET_KEY'] = 'secretKey'
 app.config['BCRYPT_LEVEL'] = 10
 bcrypt = Bcrypt(app)
+
+app.config["JWT_COOKIE_SECURE"] = False
+app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+app.config['JWT_TOKEN_LOCATION'] = ['cookies','headers', 'query_string']
+app.config['JWT_ACCESS_COOKIE_NAME'] = "userToken"
+
+jwt = JWTManager(app)
+jwt = JWTManager(app)
 
 # 로그인 페이지
 @app.route('/')
@@ -41,15 +59,9 @@ def user_login():
    if not is_same:
       return jsonify({'error': 401})
 
-   # 비밀번호가 일치하면 JWT 토큰을 만들어 발급
-   payload = {
-      'user_id' : id_receive,
-      'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
-   }
-   # JWT 암호화
-   token = jwt.encode(payload,SECRET_KEY, algorithm='HS256')
-
-   return jsonify({'result' : 200, 'nickname': find_user["user_nickname"], 'token' : token })
+   
+   access_token = create_access_token(identity=find_user['user_id'])
+   return jsonify({'result' : 200, 'nickname': find_user["user_nickname"], 'token' : access_token })
     
 @app.route('/login/nick', methods=['GET'])
 def api_valid():
@@ -89,22 +101,22 @@ def upload_user():
 # 냉장고 페이지
 #3 물품 리스트 api--------------------------------------------------------------------
 @app.route('/refrigerator/<user_id>', methods=['GET'])
+@jwt_required()
 def show_food_list(user_id):
+
    decode_id = base64.b64decode(user_id).decode('ascii')
-   print(decode_id)
 
    # 물품의 정보 리스트 생성 + 남은 기간 계산
    result = list(db.foods.find({'user_id': decode_id}, {}).sort("food_limited_date",-1))
    nickname = db.users.find_one({'user_id': decode_id})['user_nickname']
    cold_list, freeze_list = list(), list()
-   
    for food in result:
-      food['food_remained_date'] = int(food['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      food['food_remained_date'] = int(food['food_limited_date'].replace("-", "")) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
-
+   print("----------서버 냉장고----------")
    return render_template('main.html', userName=nickname, cold_food_list=cold_list, frozed_food_list=freeze_list)
 
 #3 추천 리스트 api--------------------------------------------------------------
