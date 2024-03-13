@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% block head %}
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,19 +15,11 @@
       integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
       crossorigin="anonymous"
     ></script>
-    <title>The Fresh Keeper</title>
+    <title>{% block title %} The Fresh Keeper {% endblock %}</title>
+    {% endblock %}
   </head>
   <body class="bg-background">
-    <section class="" id="login-page">
-      {% include 'components/login.html' %}
-    </section>
-    <section class="hidden" id="signup-page">
-      {% include 'components/signup.html' %}
-    </section>
-    <section class="hidden" id="refrigerator-page">
-      {% include 'components/main.html' %}
-    </section>
-
+    <div id="content">{% block content %}{% endblock %}</div>
     <script>
       // 해야하는 것
       // 1. 페이지가 새로고침 또는 처음 불러와질 때 로컬스토리지에 user-id가 존재하는지 확인

@@ -16,8 +16,16 @@ bcrypt = Bcrypt(app)
 
 # 로그인 페이지
 @app.route('/')
-def login():
-   return render_template('index.html')
+def home():
+   return render_template('login.html')
+
+@app.route('/signup')
+def signup():
+   return render_template('signup.html')
+
+@app.route('/refrigerator')
+def main():
+   return render_template('main.html')
    
 # [로그인 API]
 @app.route('/login', methods=['POST'])
@@ -63,11 +71,6 @@ def api_valid():
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
-# 회원가입 페이지
-@app.route('/signup')
-def signup():
-   return render_template('signup.html')
-
 # 회원가입 API
 @app.route('/signup', methods=['POST'])
 def upload_user():
@@ -103,7 +106,7 @@ def show_food_list():
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
 
-      return render_template('index.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
+      return render_template('main.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
    
 
 #3 추천 리스트 api--------------------------------------------------------------
