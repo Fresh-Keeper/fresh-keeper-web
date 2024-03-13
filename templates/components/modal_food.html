@@ -1,5 +1,5 @@
 <div
-  class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
+  class="bg-white rounded-2xl w-[50%] h-[45%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
   <button class="w-full text-right text-3xl" onclick="closeModal()">x</button>
   <div class="px-10">
@@ -23,23 +23,29 @@
         <option>냉동</option>
       </select>
     </div>
-    <div class="mt-2">
-      <input
-        id="purchase-date"
-        type="date"
-        placeholder="구매날짜"
-        name="user-id"
-        class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
-      />
+    <div class="mt-2 display justify-between">
+      <label>
+        <p class="w-full text-left">구매 날짜</p>
+        <input
+          id="purchase-date"
+          type="date"
+          placeholder="구매날짜"
+          name="user-id"
+          class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
+        />
+      </label>
     </div>
     <div class="mt-2">
-      <input
-        id="expiration-date"
-        type="date"
-        placeholder="소비기한"
-        name="user-id"
-        class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
-      />
+      <label>
+        <p class="w-full text-left">소비 기한</p>
+        <input
+          id="expiration-date"
+          type="date"
+          placeholder="소비기한"
+          name="user-id"
+          class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
+        />
+      </label>
     </div>
     <div class="mt-2">
       <input
