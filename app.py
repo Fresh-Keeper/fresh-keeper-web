@@ -6,7 +6,7 @@ db = client.fresh_keeper
 from flask import Flask, request, jsonify, render_template
 from flask_bcrypt import Bcrypt
 
-import datetime
+import datetime, base64
 import jwt
 
 app = Flask(__name__)
