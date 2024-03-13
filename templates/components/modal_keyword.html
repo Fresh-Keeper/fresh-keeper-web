@@ -1,8 +1,8 @@
 <div id="apple"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
-  <!-- <button class="w-full text-right text-3xl" onclick="close()">x</button> -->
-  <input type="button" value="닫기" onclick="close()"/>
+  <button onclick="close_key()">x</button>
+  <!-- <input type="button" value="닫기" onclick="close()"/> -->
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -25,15 +25,15 @@
   </div>
 </div>
 <script>
-  let inputId = "forrest"
     $(document).ready(function () {
         show_key();
     });
 
-  function close(){
+  function close_key(){
     console.log("동작")
-    $("#apple").attr("style", "display:none !important")
-  }
+    if ($("#apple").css("display")=="block")  {
+      $("#apple").hide();
+    }}
 
   function keyword(){
     let inputKeyword = $("#food-id").val();

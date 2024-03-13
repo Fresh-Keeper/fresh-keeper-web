@@ -16,7 +16,6 @@ app.config['SECRET_KEY'] = 'secretKey'
 app.config['BCRYPT_LEVEL'] = 10
 bcrypt = Bcrypt(app)
 
-
 # 로그인 페이지
 @app.route('/')
 def home():
@@ -117,14 +116,17 @@ def show_keyword_list():
    
    # 개수가 0인 키워드 리스트 생성
    keywords = list(db.keywords.find({'user_id':user_id_receive},{'_id':0,'keyword':1}))
+   keyword_names = set(keyword['keyword'] for keyword in keywords)
    foods = list(db.foods.find({'user_id':user_id_receive},{'_id':0,'food_name':1}))   
    food_names = set(food['food_name'] for food in foods)
-   keywords_not_exist = [keyword for keyword in keywords if keyword['keyword'] not in food_names]
+   # keywords_not_exist = [keyword for keyword in keywords if keyword['keyword'] not in food_names]
+   keywords_not_exist = keyword_names - food_names
+   return jsonify({'result': 200, 'keyword_list': list(keywords_not_exist)})
+   # if(len(keywords_not_exist)==0):
+   #    return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
+   # else:
+   #    return jsonify({'result': 200, 'keyword_list': keywords_not_exist})
 
-   if(len(keywords_not_exist)==0):
-      return jsonify({'result': 400, 'keyword_list': keywords_not_exist})
-   else:
-      return jsonify({'result': 200, 'keyword_list': keywords_not_exist})
 #3-1 물품 추가 api ---------------------------------------------------------------------
 @app.route('/foods/add',methods=['POST'])
 def add_food():
