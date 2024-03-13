@@ -2,6 +2,9 @@
   id="keyword_modal"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
+<button class="w-full text-right text-3xl" onclick="close_keyword_modal()">
+  적용
+</button>
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -22,9 +25,6 @@
       </li>
     </ul>
   </div> -->
-  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">
-    적용
-  </button>
 </div>
 <script>
   // 현재 url에서 user_id 가져오기
@@ -42,6 +42,10 @@
 
   function add_keyword() {
     let inputKeyword = $("#food-id").val();
+    if (inputKeyword === "") {
+    alert("키워드를 입력해주세요.");
+    return;
+  }
     $.ajax({
       type: "POST",
       url: "/keywords/add",
@@ -99,8 +103,8 @@
           let keyword = show_keys[i]["keyword"];
           let temp_html = `<div class="scrollbar-hide">
                               <li class="flex justify-between mx-5">
-                                <span>${keyword}</span>
-                                <button type="button" onclick="del_keyword('${keyword}')">삭제</button>
+                                <span style="font-size: 25px">${keyword}</span>
+                                <button type="button" onclick="del_keyword('${keyword}')" class="keyword-item">삭제</button>
                               </li>
                            </div>`;
           $("#show_key").append(temp_html);
