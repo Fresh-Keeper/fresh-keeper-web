@@ -30,9 +30,13 @@
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}
@@ -41,7 +45,7 @@
   <ul id="freeze_list" style="display: none">
     {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
     <li class="flex justify-between p-5">
-      {% elif food["food_remained_date"] > 0 %}
+      {% elif food["food_remained_date"] >= 0 %}
     </li>
 
     <li class="flex justify-between p-5" style="background-color: #e67d7d">
@@ -55,9 +59,13 @@
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}

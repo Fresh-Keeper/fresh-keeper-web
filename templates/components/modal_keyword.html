@@ -2,7 +2,7 @@
   id="apple"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
-  <button class="w-full text-right text-3xl" onclick="close()">x</button>
+  <button class="w-full text-right text-3xl" onclick="closeModal()">x</button>
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -11,15 +11,14 @@
         id="food-id"
         class="block w-[90%] rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
       />
-      <button class="text-basic" onclick="keyword()">등록</button>
+      <button class="text-basic" onclick="add_keyword()">등록</button>
     </div>
   </div>
-
   <div id="show_key" class="scrollbar-hide">
     <ul>
       <li class="flex justify-between mx-5">
         <span>식료품 이름</span>
-        <button onclick="del_key()">삭제</button>
+        <button onclick="del_keyword()">삭제</button>
       </li>
     </ul>
   </div>
@@ -31,11 +30,11 @@
     show_key();
   });
 
-  function close() {
+  function closeModal() {
     document.querySelector("details").removeAttribute("open");
   }
 
-  function keyword() {
+  function add_keyword() {
     let inputKeyword = $("#food-id").val();
     $.ajax({
       type: "POST",
@@ -55,7 +54,7 @@
     });
   }
 
-  function del_key(keyword) {
+  function del_keyword(keyword) {
     console.log(keyword);
     $.ajax({
       type: "POST",
