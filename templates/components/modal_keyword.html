@@ -25,10 +25,11 @@
   </div> -->
 </div>
 <script>
-  let inputId = atob(window.location.pathname.split("/")[2]);
+  // 현재 url에서 user_id 가져오기
+  inputId = atob(window.location.pathname.split("/")[2]);
+  console.log(inputId)
   // console.log("------------");
   $(document).ready(function () {
-    // 현재 url에서 user_id 가져오기
     show_keyword();
   });
   function close_keyword_modal() {
