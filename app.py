@@ -95,7 +95,7 @@ def show_food_list(user_id):
    print(decode_id)
 
    # 물품의 정보 리스트 생성 + 남은 기간 계산
-   result = list(db.foods.find({'user_id': decode_id}, {}))
+   result = list(db.foods.find({'user_id': decode_id}, {}).sort("food_limited_date",-1))
    nickname = db.users.find_one({'user_id': decode_id})['user_nickname']
    cold_list, freeze_list = list(), list()
    
