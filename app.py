@@ -143,7 +143,7 @@ def add_food():
          'food_category':food_category_receive,
          'user_id':user_id_receive
          }
-   
+   print(food_purchase_date_receive)
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
 # 3-2 키워드 관리 ---------------------------------------------------------------------
