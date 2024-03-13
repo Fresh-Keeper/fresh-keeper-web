@@ -1,8 +1,8 @@
 <div
-  id="apple"
+  id="keyword_modal"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
-  <button class="w-full text-right text-3xl" onclick="closeModal()">x</button>
+  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">x</button>
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -14,24 +14,26 @@
       <button class="text-basic" onclick="add_keyword()">등록</button>
     </div>
   </div>
-  <div id="show_key" class="scrollbar-hide">
+  <ul id="show_key"></ul>
+  <!-- <div id="show_key" class="scrollbar-hide">
     <ul>
       <li class="flex justify-between mx-5">
         <span>식료품 이름</span>
         <button onclick="del_keyword()">삭제</button>
       </li>
     </ul>
-  </div>
+  </div> -->
 </div>
 <script>
+  // 현재 url에서 user_id 가져오기
+  inputId = atob(window.location.pathname.split("/")[2]);
+  console.log(inputId)
+  // console.log("------------");
   $(document).ready(function () {
-    // 현재 url에서 user_id 가져오기
-    inputId = atob(window.location.pathname.split("/")[2]);
-    show_key();
+    show_keyword();
   });
-
-  function closeModal() {
-    document.querySelector("details").removeAttribute("open");
+  function close_keyword_modal() {
+    $("#keyword_modal").removeClass("open");
   }
 
   function add_keyword() {
@@ -46,10 +48,10 @@
       success: function (response) {
         if (response["result"] == 200) {
           alert("추가되었습니다.");
-        }
+          window.location.reload();}
         if (response["result"] != 200) {
           alert("이미 존재하는 키워드 입니다.");
-        }
+          window.location.reload();}
       },
     });
   }
@@ -58,35 +60,36 @@
     console.log(keyword);
     $.ajax({
       type: "POST",
-      url: "/keywords/delete",
-      data: { keyword_give: keyword },
+      url: '/keywords/delete',
+      data: { keyword_give: keyword,
+        user_id_give: inputId },
       success: function (response) {
-        if ((response["result"] = 200)) {
+        if ((response["result"] == 200)) {
           alert("삭제되었습니다.");
+          window.location.reload();
         }
       },
     });
   }
 
-  function show_key() {
-    $("#show_key").empty();
-
+  function show_keyword() {
+    console.log("------");
+    // $("#show_key").empty();
     $.ajax({
       type: "POST",
-      url: "keywords/show",
+      url: "/keywords/show",
       data: { user_id_give: inputId },
       success: function (response) {
-        let show_keys = response["show_keys"];
+        let show_keys = response["show_keys"]
+        console.log(show_keys);
         for (i = 0; i < show_keys.length; i++) {
           let keyword = show_keys[i]["keyword"];
-          let temp_html = `<div id="show_key" class="pt-5 px-10 ">
-                            <ul>
+          let temp_html = `<div class="scrollbar-hide">
                               <li class="flex justify-between mx-5">
                                 <span>${keyword}</span>
-                                <button onclick="del_key('${keyword}')">삭제</button>
+                                <button type="button" onclick="del_keyword('${keyword}')">삭제</button>
                               </li>
-                            </ul>
-                          </div>`;
+                           </div>`;
           $("#show_key").append(temp_html);
         }
       },
