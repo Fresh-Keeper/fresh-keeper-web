@@ -2,7 +2,6 @@
   <div class="h-full bg-white">장바구니 추천 리스트</div>
   <div id="recommend">
     <ul>
-      <li><span>사과&nbsp;</span>0개</li>
     </ul>
   </div>
 </div>
@@ -10,7 +9,6 @@
 
 <script>  
   function show_recommend(){
-    $("#recommend").empty();
     $.ajax({
       type:"POST",
       url:"/keywords",
@@ -19,11 +17,10 @@
         let keyword_list = response["keyword_list"]
         for (i = 0; i < show_keys.length; i++){
           let keyword_recommned = keyword_list[i]
-          let temp_html = `<div id="recommend">
-                            <ul>
+          let temp_html = `
                               <li><span>${keyword_recommned}&nbsp;</span>0개</li>
-                            </ul>
-                           </div>`
+                            
+                          `
           $("#recommend").append(temp_html);
         }
       }
