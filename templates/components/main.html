@@ -1,0 +1,46 @@
+<div class="bg-background h-screen">
+  <header class="container h-[10%] mx-auto py-5">
+    <p class="text-center text-5xl font-bold text-basic">
+      {{userName}}의 냉장고
+    </p>
+  </header>
+
+  <div class="grid grid-cols-3 auto-rows-auto gap-5 h-[80%] text-center">
+    <div>
+      <div class="grid grid-rows-2 gap-5 h-[20%] px-5 pt-5">
+        <div>
+          <details class="open">
+            <!-- Button to be visible -->
+            <summary
+              class="bg-basic text-white rounded-2xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
+            >
+              식료품 추가
+            </summary>
+
+            <!-- Content will be hidden until the user clicks on the summary button. -->
+            {% include 'components/modal_food.html' %}
+          </details>
+        </div>
+        <div>
+          <details class="open">
+            <!-- Button to be visible -->
+            <summary
+              class="bg-basic text-white rounded-2xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
+            >
+              관리 키워드 설정
+            </summary>
+
+            <!-- Content will be hidden until the user clicks on the summary button. -->
+            {% include 'components/modal_keyword.html' %}
+          </details>
+        </div>
+      </div>
+      {% include 'components/basket.html' %}
+    </div>
+
+    {% include 'components/foods_list.html' %}
+
+    <!--food info, Default: visibility: hidden;-->
+    {% include 'components/food_detail.html' %}
+  </div>
+</div>
