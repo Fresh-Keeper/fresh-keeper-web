@@ -24,10 +24,6 @@ def home():
 @app.route('/signup')
 def signup():
    return render_template('signup.html')
-
-@app.route('/refrigerator')
-def main():
-   return render_template('main.html')
    
 # [로그인 API]
 @app.route('/login', methods=['POST'])
@@ -92,14 +88,14 @@ def upload_user():
 
 # 냉장고 페이지
 #3 물품 리스트 api--------------------------------------------------------------------
-@app.route('/refrigerator', methods=['POST'])
-def show_food_list():
+@app.route('/refrigerator/<user_id>', methods=['GET'])
+def show_food_list(user_id):
 
-   user_id_receive = request.form['user_id_give']
-   
    # 물품의 정보 리스트 생성 + 남은 기간 계산
-   result = list(db.foods.find({'user_id':user_id_receive}, {}))
+   result = list(db.foods.find({'user_id': user_id}, {}))
+   nickname = db.users.find_one({'user_id': user_id})['user_nickname']
    cold_list, freeze_list = list(), list()
+   
 
    for food in result:
       food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
@@ -108,8 +104,7 @@ def show_food_list():
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
 
-      return render_template('main.html', userName=user_id_receive, cold=cold_list, freeze=freeze_list)
-   
+   return render_template('main.html', userName=nickname, cold=cold_list, freeze=freeze_list)
 
 #3 추천 리스트 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])

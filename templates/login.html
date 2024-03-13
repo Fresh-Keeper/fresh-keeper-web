@@ -98,33 +98,18 @@ block content %}
             }
           },
         }).then((arg) => {
+          console.log(arg);
           $.ajax({
-            type: "POST",
-            url: "/refrigerator",
-            data: {
-              user_id_give: currentUser.userId,
-              user_nickname_give: currentUser.userNickName,
-            },
+            type: "GET",
+            url: `/refrigerator/${currentUser.userId}`,
+            data: {},
             success: function (response) {
-              $(location).attr("href", "/refrigerator");
+              $(location).attr("href", `/refrigerator/${currentUser.userId}`);
             },
           });
         });
       });
     }
-  }
-
-  // 냉장고 페이지 이동용
-  function refrigerator() {
-    $.ajax({
-      type: "POST",
-      url: "/refrigerator",
-      data: { category_give: "냉장", user_id_give: "forrest" },
-      success: function (response) {
-        console.log(1);
-        $(location).attr("href", "/refrigerator");
-      },
-    });
   }
 </script>
 {% endblock %}
