@@ -62,24 +62,7 @@ def user_login():
    
    access_token = create_access_token(identity=find_user['user_id'])
    return jsonify({'result' : 200, 'nickname': find_user["user_nickname"], 'token' : access_token })
-    
-@app.route('/login/nick', methods=['GET'])
-def api_valid():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        # token을 시크릿키로 디코딩합니다.
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        print(payload)
-        # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
-        # 여기에선 그 예로 닉네임을 보내주겠습니다.
-        userinfo = db.users.find_one({'user_id': payload['id']}, {'_id': 0,'user_nickname':1})
-        return jsonify({'result': 'success', 'nickname': userinfo['user_nickname']})
-    
-    except jwt.ExpiredSignatureError:
-        # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
-        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
-    except jwt.exceptions.DecodeError:
-        return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
+
 
 # 회원가입 API
 @app.route('/signup', methods=['POST'])
