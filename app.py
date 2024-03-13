@@ -190,7 +190,7 @@ def show_food_detail():
    if not food_detail:
       return jsonify({'error': '존재하지 않는 정보 요청'})
    
-   food_detail['food_remained_date'] = int(food_detail['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+   food_detail['food_remained_date'] = int(food_detail['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 
