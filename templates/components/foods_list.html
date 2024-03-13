@@ -92,7 +92,10 @@
 </div>
 
 <div class="h-full flex justify-center items-center">
-  <div class="bg-white mx-5 p-5 rounded-2xl h-[80%] w-full" id="food-detail">
+  <div
+    class="bg-white mx-5 p-5 rounded-2xl h-[85%] w-full hidden"
+    id="food-detail"
+  >
     <div class="w-full text-right text-3xl" onclick="closeDetail()">X</div>
     <div class="grid grid-rows-6 gap-10 pt-5 text-xl">
       <p class="text-slate-500 text-3xl" id="detail-name">
@@ -114,7 +117,7 @@
         <button class="text-3xl" id="minus" onclick="updateAmount(this.id)">
           -
         </button>
-        <span id="detail-amount">클릭한 식료품 수량</span>
+        <span class="text-4xl" id="detail-amount">클릭한 식료품 수량</span>
         <button class="text-3xl" id="plus" onclick="updateAmount(this.id)">
           +
         </button>
@@ -132,6 +135,8 @@
 </div>
 
 <script>
+  let food_id = null;
+
   $(document).ready(function () {
     show_refrigeration();
   });
@@ -154,6 +159,7 @@
   }
 
   function detail(id) {
+    food_id = id;
     $("#food-detail").addClass("hidden");
 
     $.ajax({
@@ -163,6 +169,7 @@
       success: function (response) {
         if (response["result"] == 200) {
           const info = response["food_detail"];
+          console.log(info);
           $("#detail-name").text(info.food_name);
           $("#detail-date").text(info.food_purchase_date);
           $("#detail-limit").text(info.food_limited_date);
@@ -179,23 +186,46 @@
   }
 
   function updateAmount(id) {
-    let updateValue = $("#detail-amount").val();
+    let updateValue = $("#detail-amount").text();
     if (id == "minus") {
-      updateValue < 0 ? deleteFood() : updateValue--;
+      if (updateValue == 1) {
+        deleteFood();
+        return;
+      }
+      updateValue--;
+      $("#detail-amount").text(updateValue);
     }
     if (id == "plus") {
       updateValue++;
+      $("#detail-amount").text(updateValue);
     }
 
     $.ajax({
-      // updateValue 전송
+      type: "PUT",
+      url: "/foods/detail/amount",
+      data: { food_id_give: food_id, update_amount_give: updateValue },
+      success: function (response) {
+        if (response["result"] == 200) {
+          console.log("성공");
+        }
+      },
     });
   }
 
   function deleteFood() {
     const deleteOk = confirm("삭제하시겠습니까?");
     if (deleteOk) {
-      // 식품 삭제 api 요청
+      $.ajax({
+        type: "POST",
+        url: "/foods/delete",
+        data: { food_id_give: food_id },
+        success: function (response) {
+          if (response["result"] == 200) {
+            console.log("성공");
+            location.reload();
+          }
+        },
+      });
     }
   }
 </script>
