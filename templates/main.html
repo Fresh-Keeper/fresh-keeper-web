@@ -11,7 +11,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
     <div>
       <div class="grid grid-rows-2 gap-5 h-[20%] px-5 pt-5">
         <div>
-          <details class="open">
+          <details class="">
             <!-- Button to be visible -->
             <summary
               class="bg-lime-500 text-white rounded-1xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
@@ -41,9 +41,6 @@ head %} {{ super() }} {% endblock %} {% block content %}
     </div>
 
     {% include 'components/foods_list.html' %}
-
-    <!--food info, Default: visibility: hidden;-->
-    {% include 'components/food_detail.html' %}
   </div>
 </div>
 {% endblock %}
