@@ -2,9 +2,6 @@
   id="keyword_modal"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
-  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">
-    x
-  </button>
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -25,6 +22,9 @@
       </li>
     </ul>
   </div> -->
+  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">
+    적용
+  </button>
 </div>
 <script>
   // 현재 url에서 user_id 가져오기
@@ -36,7 +36,8 @@
   });
   function close_keyword_modal() {
     var details = document.getElementById("show_keyword_modal");
-    details.removeAttribute("open");
+    details.removeAttribute("open")
+    window.location.reload();
   }
 
   function add_keyword() {
@@ -51,7 +52,14 @@
       success: function (response) {
         if (response["result"] == 200) {
           alert("추가되었습니다.");
-          window.location.reload();
+          let temp_html = `<div class="scrollbar-hide">
+                                    <li class="flex justify-between mx-5">
+                                        <span>${inputKeyword}</span>
+                                        <button type="button" onclick="del_keyword('${inputKeyword}')">삭제</button>
+                                    </li>
+                                </div>`;
+                $("#show_key").append(temp_html);
+            
         }
         if (response["result"] != 200) {
           alert("이미 존재하는 키워드 입니다.");
@@ -70,11 +78,13 @@
       success: function (response) {
         if (response["result"] == 200) {
           alert("삭제되었습니다.");
-          window.location.reload();
+          $("#show_key li").each(function() {
+                    if ($(this).text().includes(keyword)) {
+                        $(this).remove();
         }
       },
-    });
-  }
+    );
+  }}})}
 
   function show_keyword() {
     // $("#show_key").empty();

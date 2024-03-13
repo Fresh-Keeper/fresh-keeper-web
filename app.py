@@ -170,7 +170,6 @@ def delete_keyword():
 # 키워드 표시
 @app.route('/keywords/show',methods=['POST'])
 def show_keyword():
-   print("--------")
    user_id_receive = request.form['user_id_give']
    result = list(db.keywords.find({"user_id":user_id_receive},{"_id":0}))
    return jsonify({'result':'success','show_keys':result})

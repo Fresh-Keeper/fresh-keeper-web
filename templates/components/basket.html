@@ -6,6 +6,7 @@
 
 
 <script>  
+
   inputId = atob(window.location.pathname.split("/")[2]);
   $(document).ready(function () {
     show_recommend();
@@ -20,8 +21,8 @@
         let keyword_list = response["keyword_list"]
         for (i = 0; i < keyword_list.length; i++){
           let keyword_recommned = keyword_list[i]
-          let temp_html = `
-          <li><span>${keyword_recommned}</span></li>`
+          let temp_html = `<li class="custom-scrollbar"><span>${keyword_recommned}</span></li>
+          `
           $("#recommend").append(temp_html);
         }
       }
