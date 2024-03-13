@@ -142,6 +142,15 @@
     </div>
   </div>
 </div>
+<style>
+  .bg-white.rounded-md {
+    height: 85%; /* 부모 요소의 높이의 50%로 설정 */
+  }
+  ul {
+    overflow-y: auto;
+    max-height: calc(100% - 10px); /* 스크롤이 표시될 최대 높이 설정 */
+  }
+</style>
 
 <script>
   let food_id = null;
@@ -182,7 +191,15 @@
           $("#detail-name").text(info.food_name);
           $("#detail-date").text(info.food_purchase_date);
           $("#detail-limit").text(info.food_limited_date);
-          $("#detail-remained").text(`${info.food_remained_date}일 남음`);
+
+          if (info.food_remained_date >= 0) {
+            $("#detail-remained").text(`${info.food_remained_date}일 남음`);
+          } else {
+            $("#detail-remained").text(
+              `${info.food_remained_date * -1}일 지남`
+            );
+          }
+
           $("#detail-amount").text(info.food_amount);
           $("#food-detail").removeClass("hidden");
         }
