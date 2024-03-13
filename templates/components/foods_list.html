@@ -44,9 +44,13 @@
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}
@@ -59,7 +63,7 @@
       id="{{food['_id']}}"
       onclick="detail(this.id)"
     >
-      {% elif food["food_remained_date"] > 0 %}
+      {% elif food["food_remained_date"] >= 0 %}
     </li>
 
     <li
@@ -82,9 +86,13 @@
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}
