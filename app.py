@@ -88,10 +88,12 @@ def upload_user():
 #3 물품 리스트 api--------------------------------------------------------------------
 @app.route('/refrigerator/<user_id>', methods=['GET'])
 def show_food_list(user_id):
+   decode_id = base64.b64decode(user_id).decode('ascii')
+   print(decode_id)
 
    # 물품의 정보 리스트 생성 + 남은 기간 계산
-   result = list(db.foods.find({'user_id': user_id}, {}))
-   nickname = db.users.find_one({'user_id': user_id})['user_nickname']
+   result = list(db.foods.find({'user_id': decode_id}, {}))
+   nickname = db.users.find_one({'user_id': decode_id})['user_nickname']
    cold_list, freeze_list = list(), list()
    
 

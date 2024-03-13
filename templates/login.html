@@ -98,13 +98,13 @@ block content %}
             }
           },
         }).then((arg) => {
-          console.log(arg);
+          let requestId = btoa(currentUser.userId);
           $.ajax({
             type: "GET",
-            url: `/refrigerator/${currentUser.userId}`,
+            url: `/refrigerator/${requestId}`,
             data: {},
             success: function (response) {
-              $(location).attr("href", `/refrigerator/${currentUser.userId}`);
+              $(location).attr("href", `/refrigerator/${requestId}`);
             },
           });
         });
