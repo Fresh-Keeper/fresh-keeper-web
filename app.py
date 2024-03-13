@@ -19,7 +19,25 @@ bcrypt = Bcrypt(app)
 # 로그인 페이지
 @app.route('/')
 def login():
-   return render_template('index.html')
+   user_id_receive = "test_01"
+   
+   # 물품의 정보 리스트 생성 + 남은 기간 계산
+   cold_food_list = list(db.foods.find({'food_category':"냉장",'user_id':user_id_receive}, {}))
+   
+   for food in cold_food_list:
+      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
+      # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
+      food['_id'] = str(food['_id'])
+   
+   frozed_food_list = list(db.foods.find({'food_category':"냉동",'user_id':user_id_receive}, {}))
+   for food in frozed_food_list:
+      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
+      # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
+      food['_id'] = str(food['_id'])
+   
+   return render_template('index.html', userName="테스트01", cold_food_list=cold_food_list,frozed_food_list=frozed_food_list)
    
 # [로그인 API]
 @app.route('/login', methods=['POST'])
