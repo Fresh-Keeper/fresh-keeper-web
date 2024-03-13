@@ -1,7 +1,7 @@
 <div class="h-[80%] px-5 pt-5 rounded-md">
-  <div class="h-full bg-white">
-    장바구니추천리스트
-    <ul id="recommend"></ul>
+  <div class="h-full bg-white p-5">
+    <div class="text-2xl">장바구니추천리스트</div>
+    <ul id="recommend" class="h-[90%] pt-2 overflow-y-scroll"></ul>
   </div>
 </div>
 
@@ -20,8 +20,10 @@
         let keyword_list = response["keyword_list"];
         for (i = 0; i < keyword_list.length; i++) {
           let keyword_recommned = keyword_list[i];
-          let temp_html = `<li class="custom-scrollbar"><span>${keyword_recommned}</span></li>
-          `;
+          let temp_html = `<li class="flex justify-around text-xl bg-light rounded-2xl py-2 mb-1">
+                            <span>${keyword_recommned}</span>
+                            <span>수량 0개</span>
+                          </li>`;
           $("#recommend").append(temp_html);
         }
       },
