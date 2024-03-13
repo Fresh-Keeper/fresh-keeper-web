@@ -2,11 +2,13 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
+
 from flask import Flask, request, jsonify, render_template
-from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-import datetime, base64
+
+import datetime
 import jwt
+
 app = Flask(__name__)
 
 SECRET_KEY = 'this is key' # 토큰 암호화할 key 세팅
@@ -94,7 +96,6 @@ def show_food_list(user_id):
    nickname = db.users.find_one({'user_id': user_id})['user_nickname']
    cold_list, freeze_list = list(), list()
    
-
    for food in result:
       food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
@@ -102,7 +103,7 @@ def show_food_list(user_id):
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
 
-   return render_template('main.html', userName=nickname, cold=cold_list, freeze=freeze_list)
+   return render_template('main.html', userName=nickname, cold_food_list=cold_list, frozed_food_list=freeze_list)
 
 #3 추천 리스트 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])
