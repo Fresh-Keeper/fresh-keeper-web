@@ -2,11 +2,13 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 client = MongoClient('mongodb+srv://sparta:jungle@cluster0.5ea9dyj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 db = client.fresh_keeper
+
 from flask import Flask, request, jsonify, render_template
-from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-import datetime, base64
+
+import datetime
 import jwt
+
 app = Flask(__name__)
 
 SECRET_KEY = 'this is key' # 토큰 암호화할 key 세팅
