@@ -49,13 +49,6 @@ block content %}
     $(location).attr("href", "/signup");
   });
 
-  // 로그인
-  let currentUser = {
-    userId: null,
-    userNickName: null,
-    userToken: null,
-  };
-
   function loginInputValidate(inputId, inputPw) {
     if (inputId == "" && inputPw == "") {
       $("#user-id").css("border", "1px solid red");
@@ -74,7 +67,6 @@ block content %}
   function login() {
     let inputId = $("#user-id").val();
     let inputPw = $("#user-pw").val();
-
     if (loginInputValidate(inputId, inputPw)) {
       new Promise((resolve, reject) => {
         $.ajax({
@@ -83,10 +75,10 @@ block content %}
           data: { id_give: inputId, pw_give: inputPw },
           success: function (response) {
             if (response["result"] == 200) {
+              //로그인 성공시 쿠키에 토큰 저장
+              $.cookie("userToken", response["token"]);
+              //-----------------------
               $("#login-page").toggleClass("hidden");
-              currentUser.userId = inputId;
-              currentUser.userNickName = response["nickname"];
-              currentUser.userToken = response["token"];
             } else if (response["error"] == 404) {
               $("#user-id").css("border", "1px solid red");
               let error = `<span style="color: red">존재하지 않는 아이디 입니다.<span>`;
@@ -98,13 +90,45 @@ block content %}
             }
           },
         }).then((arg) => {
-          let requestId = btoa(currentUser.userId);
+          // console.log($.cookie("userToken"));
+          console.log(`Bearer ${$.cookie("userToken")}`);
+          let requestId = btoa(inputId);
           $.ajax({
             type: "GET",
             url: `/refrigerator/${requestId}`,
             data: {},
+            headers: {
+              Authorization: `Bearer ${$.cookie("userToken")}`,
+            },
             success: function (response) {
-              $(location).attr("href", `/refrigerator/${requestId}`);
+              if (response["result"] == 401) {
+                console.log("-----------실패-------");
+
+                //$(location).attr("href", "/");
+              } else {
+                console.log("------------자바스크립트에서 페이지 변환-------");
+                // fetch(`/refrigerator/${requestId}`, {
+                //   method: "GET",
+                //   credentials: "include", // 요청에 쿠키를 포함하도록 설정
+                // })
+                //   .then((response) => {
+                //     if (!response.ok) {
+                //       throw new Error("Network response was not ok");
+                //     }
+                //     return response.json();
+                //   })
+                //   .then((data) => {
+                //     // 응답 데이터 처리
+                //     console.log(data);
+                //   })
+                //   .catch((error) => {
+                //     console.error(
+                //       "There was a problem with the fetch operation:",
+                //       error
+                //     );
+                //   });
+                $(location).attr("href", `/refrigerator/${requestId}`);
+              }
             },
           });
         });
@@ -112,4 +136,8 @@ block content %}
     }
   }
 </script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
+></script>
 {% endblock %}
