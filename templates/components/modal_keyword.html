@@ -5,7 +5,6 @@
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
   <button class="w-full text-right text-3xl" onclick="close()">x</button>
-  <!-- <input type="button" value="닫기" onclick="close()" /> -->
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -56,33 +55,11 @@
         }
       },
     });
-    $.ajax({
-      type: "POST",
-      url: "/keywords/add",
-      data: {
-        keyword_give: inputKeyword,
-        user_id_give: inputId,
-      },
-      success: function (response) {
-        if (response["result"] == 200) {
-          alert("추가되었습니다.");
-        }
-        if (response["result"] != 200) {
-          alert("이미 존재하는 키워드 입니다.");
-        }
-      },
-    });
   }
-  function del_key(keyword) {
-    console.log(keyword);
+
   function del_key(keyword) {
     console.log(keyword);
     $.ajax({
-      type: "POST",
-      url: "/keywords/delete",
-      data: { keyword_give: keyword },
-      success: function (response) {
-        if ((response["result"] = 200)) {
       type: "POST",
       url: "/keywords/delete",
       data: { keyword_give: keyword },
@@ -106,27 +83,12 @@
         for (i = 0; i < show_keys.length; i++) {
           let keyword = show_keys[i]["keyword"];
           let temp_html = `<div id="show_key" class="pt-5 px-10 ">
-    $.ajax({
-      type: "POST",
-      url: "keywords/show",
-      data: { user_id_give: inputId },
-      success: function (response) {
-        let show_keys = response["show_keys"];
-        for (i = 0; i < show_keys.length; i++) {
-          let keyword = show_keys[i]["keyword"];
-          let temp_html = `<div id="show_key" class="pt-5 px-10 ">
                             <ul>
                               <li class="flex justify-between mx-5">
                                 <span>${keyword}</span>
                                 <button onclick="del_key('${keyword}')">삭제</button>
                               </li>
                             </ul>
-                          </div>`;
-          $("#show_key").append(temp_html);
-        }
-      },
-    });
-  }
                           </div>`;
           $("#show_key").append(temp_html);
         }
