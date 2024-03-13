@@ -99,7 +99,7 @@ def show_food_list(user_id):
    cold_list, freeze_list = list(), list()
    
    for food in result:
-      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      food['food_remained_date'] = int(food['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
@@ -170,7 +170,6 @@ def delete_keyword():
 # 키워드 표시
 @app.route('/keywords/show',methods=['POST'])
 def show_keyword():
-   print("--------")
    user_id_receive = request.form['user_id_give']
    result = list(db.keywords.find({"user_id":user_id_receive},{"_id":0}))
    return jsonify({'result':'success','show_keys':result})
@@ -186,7 +185,7 @@ def show_food_detail():
    if not food_detail:
       return jsonify({'error': '존재하지 않는 정보 요청'})
    
-   food_detail['food_remained_date'] = int(food_detail['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+   food_detail['food_remained_date'] = int(food_detail['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 
