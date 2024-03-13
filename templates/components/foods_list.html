@@ -19,20 +19,38 @@
   <!-- 냉장 물품 리스트 -->
   <ul id="refrigeration_list" style="display: none">
     {%for food in cold_food_list%} {% if food["food_remained_date"] > 3 %}
-    <li class="flex justify-between p-5">
+    <li
+      class="flex justify-between p-5"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% elif food["food_remained_date"] > 0 %}
     </li>
-    <li class="flex justify-between p-5 bg-red-300">{% else %}</li>
+    <li
+      class="flex justify-between p-5 bg-red-300"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
+      {% else %}
+    </li>
 
-    <li class="flex justify-between p-5 bg-gray-300">
+    <li
+      class="flex justify-between p-5 bg-gray-300"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% endif %}
       <div>
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}
@@ -40,31 +58,93 @@
   <!-- 냉동 물품 리스트 -->
   <ul id="freeze_list" style="display: none">
     {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
-    <li class="flex justify-between p-5">
-      {% elif food["food_remained_date"] > 0 %}
+    <li
+      class="flex justify-between p-5"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
+      {% elif food["food_remained_date"] >= 0 %}
     </li>
 
-    <li class="flex justify-between p-5" style="background-color: #e67d7d">
+    <li
+      class="flex justify-between p-5"
+      style="background-color: #e67d7d"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% else %}
     </li>
 
-    <li class="flex justify-between p-5" style="background-color: #bab8b8">
+    <li
+      class="flex justify-between p-5"
+      style="background-color: #bab8b8"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% endif %}
-
       <div>
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
+      {% if 0 < food["food_remained_date"] %}
       <div class="flex items-center justify-center">
         D-{{food["food_remained_date"]}}
       </div>
+      {%else%}
+      <div class="flex items-center justify-center">기한초과</div>
+      {% endif %}
     </li>
     <hr />
     {%endfor%}
   </ul>
 </div>
 
+<div class="h-full flex justify-center items-center">
+  <div
+    class="bg-white mx-5 p-5 rounded-2xl h-[85%] w-full hidden"
+    id="food-detail"
+  >
+    <div class="w-full text-right text-3xl" onclick="closeDetail()">X</div>
+    <div class="grid grid-rows-6 gap-10 pt-5 text-xl">
+      <p class="text-slate-500 text-3xl" id="detail-name">
+        detailInfo.food_name
+      </p>
+      <p class="flex justify-around text-xl">
+        <span>구매 날짜</span>
+        <span id="detail-date">클릭한 식료품 구매 날짜</span>
+      </p>
+      <p class="flex justify-around text-xl">
+        <span>구매 날짜</span>
+        <span id="detail-limit">클릭한 식료품 소비 기한</span>
+      </p>
+      <p class="flex justify-around text-xl">
+        <span>권장 소비 기한</span>
+        <span id="detail-remained"></span>
+      </p>
+      <div class="grid grid-cols-3 text-xl">
+        <button class="text-3xl" id="minus" onclick="updateAmount(this.id)">
+          -
+        </button>
+        <span class="text-4xl" id="detail-amount">클릭한 식료품 수량</span>
+        <button class="text-3xl" id="plus" onclick="updateAmount(this.id)">
+          +
+        </button>
+      </div>
+    </div>
+    <div>
+      <button
+        class="text-2xl w-[80%] text-white bg-red-700 hover:bg-red-800 rounded-2xl p-3"
+        onclick="deleteFood()"
+      >
+        삭제
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
+  let food_id = null;
+
   $(document).ready(function () {
     show_refrigeration();
   });
@@ -84,5 +164,76 @@
     $("#btn-freeze").addClass("bg-lime-500");
     $("#btn-refrigeration").removeClass("text-white");
     $("#btn-freeze").addClass("text-white");
+  }
+
+  function detail(id) {
+    food_id = id;
+    $("#food-detail").addClass("hidden");
+
+    $.ajax({
+      type: "POST",
+      url: "/foods/detail",
+      data: { food_id_give: id },
+      success: function (response) {
+        if (response["result"] == 200) {
+          const info = response["food_detail"];
+          console.log(info);
+          $("#detail-name").text(info.food_name);
+          $("#detail-date").text(info.food_purchase_date);
+          $("#detail-limit").text(info.food_limited_date);
+          $("#detail-remained").text(`${info.food_remained_date}일 남음`);
+          $("#detail-amount").text(info.food_amount);
+          $("#food-detail").removeClass("hidden");
+        }
+      },
+    });
+  }
+
+  function closeDetail() {
+    $("#food-detail").addClass("hidden");
+  }
+
+  function updateAmount(id) {
+    let updateValue = $("#detail-amount").text();
+    if (id == "minus") {
+      if (updateValue == 1) {
+        deleteFood();
+        return;
+      }
+      updateValue--;
+      $("#detail-amount").text(updateValue);
+    }
+    if (id == "plus") {
+      updateValue++;
+      $("#detail-amount").text(updateValue);
+    }
+
+    $.ajax({
+      type: "PUT",
+      url: "/foods/detail/amount",
+      data: { food_id_give: food_id, update_amount_give: updateValue },
+      success: function (response) {
+        if (response["result"] == 200) {
+          console.log("성공");
+        }
+      },
+    });
+  }
+
+  function deleteFood() {
+    const deleteOk = confirm("삭제하시겠습니까?");
+    if (deleteOk) {
+      $.ajax({
+        type: "POST",
+        url: "/foods/delete",
+        data: { food_id_give: food_id },
+        success: function (response) {
+          if (response["result"] == 200) {
+            console.log("성공");
+            location.reload();
+          }
+        },
+      });
+    }
   }
 </script>

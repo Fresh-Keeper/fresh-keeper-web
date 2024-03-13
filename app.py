@@ -99,7 +99,7 @@ def show_food_list(user_id):
    cold_list, freeze_list = list(), list()
    
    for food in result:
-      food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+      food['food_remained_date'] = int(food['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
       # 몽고디비가 자동생성해주는 ObjectId는 json으로 직렬화할 수 없어서 문자열로 변환한다.
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
@@ -129,6 +129,7 @@ def show_keyword_list():
 #3-1 물품 추가 api ---------------------------------------------------------------------
 @app.route('/foods/add',methods=['POST'])
 def add_food():
+   print('------------')
    food_name_receive = request.form['food_name_give']
    food_purchase_date_receive = request.form['food_purchase_date_give']
    food_limited_date_receive = request.form['food_limited_date_give']
@@ -143,9 +144,12 @@ def add_food():
          'food_category':food_category_receive,
          'user_id':user_id_receive
          }
+   print(type(food['food_limited_date']))
+   print('------------')
    
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
+
 # 3-2 키워드 관리 ---------------------------------------------------------------------
 # 키워드 추가
 @app.route('/keywords/add', methods=['POST'])
@@ -186,7 +190,7 @@ def show_food_detail():
    if not food_detail:
       return jsonify({'error': '존재하지 않는 정보 요청'})
    
-   food_detail['food_remained_date'] = int(food_detail['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
+   food_detail['food_remained_date'] = int(food_detail['food_limited_date'].replace("-","")) - int(datetime.datetime.today().strftime("%Y%m%d"))
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 

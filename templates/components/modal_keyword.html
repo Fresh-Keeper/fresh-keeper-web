@@ -11,7 +11,7 @@
         id="food-id"
         class="block w-[90%] rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
       />
-      <button class="text-basic" onclick="keyword()">등록</button>
+      <button class="text-basic" onclick="add_keyword()">등록</button>
     </div>
   </div>
   <ul id="show_key"></ul>
@@ -35,7 +35,7 @@
     $("#keyword_modal").removeClass("open");
   }
 
-  function keyword() {
+  function add_keyword() {
     let inputKeyword = $("#food-id").val();
     $.ajax({
       type: "POST",

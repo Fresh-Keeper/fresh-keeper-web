@@ -1,10 +1,12 @@
 <div
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
+  id="food_modal"
 >
-  <button class="w-full text-right text-3xl">x</button>
+  <button class="w-full text-right text-3xl" onclick="closeModal()">x</button>
   <div class="px-10">
     <div class="mt-2">
       <input
+        id="foodName"
         type="text"
         placeholder="식료품 이름"
         name="user-id"
@@ -24,7 +26,8 @@
     </div>
     <div class="mt-2">
       <input
-        type="text"
+        id="purchase-date"
+        type="date"
         placeholder="구매날짜"
         name="user-id"
         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
@@ -32,7 +35,8 @@
     </div>
     <div class="mt-2">
       <input
-        type="text"
+        id="expiration-date"
+        type="date"
         placeholder="소비기한"
         name="user-id"
         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
@@ -40,19 +44,69 @@
     </div>
     <div class="mt-2">
       <input
-        type="text"
+        id="quantity"
+        type="number"
         placeholder="수량"
         name="user-id"
         class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
       />
     </div>
     <div class="mt-2">
-      <input
-        type="submit"
-        value="등록"
+      <button
         id="btn-add-food"
-        class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6 bg-basic text-white"
-      />
+        class="block w-full rounded-md border-0 p-1.5 text-gray-500 hover:bg-dark hover:duration-300 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6 bg-lime-500 text-white"
+        onclick="add_new_food()"
+      >
+        등록
+      </button>
     </div>
   </div>
 </div>
+<script>
+  var inputId = atob(window.location.pathname.split("/")[2]);
+
+  function closeModal() {
+    $("#food_modal").removeClass("open");
+  }
+  function add_new_food() {
+    // 입력된 데이터 가져오기
+    var foodName = $("#foodName").val();
+    var category = $("#category").val();
+    var purchaseDate = $("#purchase-date").val();
+    var expirationDate = $("#expiration-date").val();
+    var quantity = $("#quantity").val();
+    if (
+      foodName === "" ||
+      category === "" ||
+      purchaseDate === "" ||
+      expirationDate === "" ||
+      quantity === ""
+    ) {
+      alert("모든 입력 필드를 작성해주세요.");
+      return; // 입력값이 하나라도 비어있으면 함수 종료
+    }
+
+    // AJAX 요청 보내기
+    $.ajax({
+      type: "POST",
+      url: "/foods/add",
+      data: {
+        food_name_give: foodName,
+        food_category_give: category,
+        food_purchase_date_give: purchaseDate,
+        food_limited_date_give: expirationDate,
+        food_amount_give: quantity,
+        user_id_give: inputId,
+      },
+      success: function (response) {
+        // 요청 성공 시 실행할 코드 작성
+        alert("요청 성공!");
+        location.reload(true);
+      },
+      error: function (xhr, status, error) {
+        // 요청 실패 시 실행할 코드 작성
+        alert("요청 실패:");
+      },
+    });
+  }
+</script>
