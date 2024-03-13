@@ -5,7 +5,7 @@ db = client.fresh_keeper
 from flask import Flask, request, jsonify, render_template
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-import datetime
+import datetime, base64
 import jwt
 app = Flask(__name__)
 
@@ -22,24 +22,26 @@ def login():
 # [로그인 API]
 @app.route('/login', methods=['POST'])
 def user_login():
-    id_receive = request.form['id_give']
-    pw_receive = request.form['pw_give']
-    # PW 암호화
-    pw_hash = bcrypt.generate_password_hash(pw_receive)
-    # id, 암호화된 PW를가지고 해당 유저 찾기
-    result = db.users.find_one({'user_id': id_receive, 'user_pw' : pw_hash })
-    # 찾으면 JWT 토큰을 만들어 발급
-    if result is not None:
-        payload = {
-            'user_id' : id_receive,
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
-        }
-        # JWT 암호화
-        token = jwt.encode(payload,SECRET_KEY, algorithm='HS256')
+   id_receive = request.form['id_give']
+   pw_receive = request.form['pw_give']
 
-        return jsonify({'result' : 'success', 'token' : token })
-    else :
-        return jsonify({'result':'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+   find_user = db.users.find_one({'user_id': id_receive})
+   if not find_user:
+      return jsonify({'error': 404})
+   ########################################### 에러
+   is_same = bcrypt.check_password_hash(find_user['user_pw'], pw_receive)
+   if not is_same:
+      return jsonify({'error': 401})
+
+   # 비밀번호가 일치하면 JWT 토큰을 만들어 발급
+   payload = {
+      'user_id' : id_receive,
+      'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds=5)
+   }
+   # JWT 암호화
+   token = jwt.encode(payload,SECRET_KEY, algorithm='HS256')
+
+   return jsonify({'result' : 'success', 'token' : token })
     
 @app.route('/login/nick', methods=['GET'])
 def api_valid():
@@ -75,15 +77,12 @@ def upload_user():
    if is_dup_id:
       return jsonify({'error': 409})
    
+   ########################
    user_pw_hash = bcrypt.generate_password_hash(user_pw_receive)
+   # user_pw_hash = base64.b64decode(user_pw_hash).decode("utf-8")
    new_user = {'user_id': user_id_receive, 'user_pw': str(user_pw_hash), 'user_nickname':user_nickname_receive}
    db.users.insert_one(new_user)
    return jsonify({'result': 200})
-
-# 냉장고 페이지
-@app.route('/refrigerator')
-def refrigerator():
-   return render_template('main.html') # todo: send userName
 
 # 3-2 키워드 관리
 # 키워드 추가
@@ -106,16 +105,16 @@ def delete_keyword():
    db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
    return jsonify({'result': 200})
    
+# 냉장고 페이지
 #3 물품 보여주는 api--------------------------------------------------------------------
-@app.route('/foods',methods=['POST'])
+@app.route('/refrigerator', methods=['POST'])
 def show_food_list():
 
    category_receive = request.form['category_give']
    user_id_receive = request.form['user_id_give']
    
    # 물품의 정보 리스트 생성 + 남은 기간 계산
-   result = list(db.foods.find({'food_category':category_receive,'user_id':user_id_receive},
-                               {}))
+   result = list(db.foods.find({'food_category':category_receive,'user_id':user_id_receive}, {}))
    
    for food in result:
       food['food_remained_date'] = int(food['food_limited_date']) - int(datetime.datetime.today().strftime("%Y%m%d"))
@@ -123,11 +122,11 @@ def show_food_list():
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
       
-      
    if(len(result)==0):
       return jsonify({'result': 400, 'food_list': result})
    else :    
-      return jsonify({'result': 200, 'food_list': result})
+      return render_template('main.html', jsonify({'food_list': result}))
+   
 
 #3 추천 리스트 보여주는 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])

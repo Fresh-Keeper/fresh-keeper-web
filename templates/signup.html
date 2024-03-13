@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
     <title>The Fresh Keeper</title>
   </head>
   <body class="bg-background">
@@ -11,14 +21,14 @@
       <p class="text-center text-7xl font-bold text-basic">회원가입</p>
     </header>
 
-    <div class="container mx-auto px-60">
+    <div class="container mx-auto px-60" id="container-form">
       <div class="p-2 rounded-2xl bg-white">
         <div>
           <div class="mt-2">
             <input
               type="text"
               placeholder="사용할 이름"
-              name="user-name"
+              id="input-nickname"
               class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
             />
           </div>
@@ -28,7 +38,7 @@
             <input
               type="text"
               placeholder="ID"
-              name="user-id"
+              id="input-id"
               class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-m sm:leading-6"
             />
           </div>
@@ -38,17 +48,7 @@
             <input
               type="password"
               placeholder="PW"
-              name="user-pw"
-              class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-        <div>
-          <div class="mt-2">
-            <input
-              type="password"
-              placeholder="비밀번호 재입력"
-              name="user-pw-check"
+              id="input-pw"
               class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -57,6 +57,7 @@
           <input
             type="submit"
             value="회원가입"
+            onclick="signup()"
             id="btn-signup"
             class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6 bg-basic text-white"
           />
@@ -64,6 +65,33 @@
       </div>
     </div>
 
+    <script>
+      function signup() {
+        let inputName = $("#input-nickname").val();
+        let inputId = $("#input-id").val();
+        let inputPw = $("#input-pw").val();
+
+        $.ajax({
+          type: "POST",
+          url: "/signup",
+          data: {
+            user_id_give: inputId,
+            user_pw_give: inputPw,
+            user_nickname_give: inputName,
+          },
+          success: function (response) {
+            if (response["result"] == 200) {
+              alert("가입되었습니다.");
+              location.href = "/";
+            } else if (response["error"] == 409) {
+              $("#input-id").css("border", "1px solid red");
+              let idError = `<span style="color: red">중복된 아이디 입니다.<span>`;
+              $("#container-form").append(idError);
+            }
+          },
+        });
+      }
+    </script>
     <script src="../static/js/tailwind.config.js"></script>
   </body>
 </html>
