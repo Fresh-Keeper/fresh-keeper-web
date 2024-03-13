@@ -1,3 +1,31 @@
 <div class="h-[80%] p-5 rounded-md">
   <div class="h-full bg-white">장바구니 추천 리스트</div>
+  <div id="recommend">
+    <ul>
+    </ul>
+  </div>
 </div>
+
+
+<script>  
+  function show_recommend(){
+    $.ajax({
+      type:"POST",
+      url:"/keywords",
+      data:{user_id_give : inputId},
+      success: function(response) {
+        let keyword_list = response["keyword_list"]
+        for (i = 0; i < show_keys.length; i++){
+          let keyword_recommned = keyword_list[i]
+          let temp_html = `
+                              <li><span>${keyword_recommned}&nbsp;</span>0개</li>
+                            
+                          `
+          $("#recommend").append(temp_html);
+        }
+      }
+    })
+  }
+
+
+</script>
