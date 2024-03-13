@@ -1,33 +1,30 @@
-<div class="h-[80%] p-5 rounded-md">
-  <div class="h-full bg-white">장바구니추천리스트
+<div class="h-[80%] px-5 pt-5 rounded-md">
+  <div class="h-full bg-white">
+    장바구니추천리스트
     <ul id="recommend"></ul>
   </div>
 </div>
 
-
-<script>  
-
+<script>
   inputId = atob(window.location.pathname.split("/")[2]);
   $(document).ready(function () {
     show_recommend();
   });
-  function show_recommend(){
+  function show_recommend() {
     $("#recommend").empty();
     $.ajax({
-      type:"POST",
-      url:"/keywords",
-      data:{user_id_give : inputId},
-      success: function(response) {
-        let keyword_list = response["keyword_list"]
-        for (i = 0; i < keyword_list.length; i++){
-          let keyword_recommned = keyword_list[i]
+      type: "POST",
+      url: "/keywords",
+      data: { user_id_give: inputId },
+      success: function (response) {
+        let keyword_list = response["keyword_list"];
+        for (i = 0; i < keyword_list.length; i++) {
+          let keyword_recommned = keyword_list[i];
           let temp_html = `<li class="custom-scrollbar"><span>${keyword_recommned}</span></li>
-          `
+          `;
           $("#recommend").append(temp_html);
         }
-      }
-    })
+      },
+    });
   }
-
-
 </script>

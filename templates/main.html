@@ -1,15 +1,15 @@
 {% extends "index.html" %} {% block title %}나의 냉장고{% endblock %} {% block
 head %} {{ super() }} {% endblock %} {% block content %}
 <div class="bg-background h-screen">
-  <header class="container h-[10%] mx-auto py-5">
+  <header class="container mx-auto py-5">
     <p class="text-center text-5xl font-bold text-basic">
       {{userName}}의 냉장고
     </p>
   </header>
 
   <div class="grid grid-cols-3 auto-rows-auto gap-5 h-[80%] text-center">
-    <div>
-      <div class="grid grid-rows-2 gap-5 h-[20%] px-5 pt-5">
+    <div id="left-box" class="h-[80%]">
+      <div class="grid grid-rows-2 gap-5 h-[20%] px-5">
         <div>
           <details id="show_food_modal" class="open">
             <!-- Button to be visible -->
@@ -39,7 +39,6 @@ head %} {{ super() }} {% endblock %} {% block content %}
       </div>
       {% include 'components/basket.html' %}
     </div>
-
     {% include 'components/foods_list.html' %}
   </div>
 </div>
