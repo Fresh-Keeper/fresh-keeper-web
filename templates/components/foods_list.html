@@ -19,12 +19,26 @@
   <!-- 냉장 물품 리스트 -->
   <ul id="refrigeration_list" style="display: none">
     {%for food in cold_food_list%} {% if food["food_remained_date"] > 3 %}
-    <li class="flex justify-between p-5">
+    <li
+      class="flex justify-between p-5"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% elif food["food_remained_date"] > 0 %}
     </li>
-    <li class="flex justify-between p-5 bg-red-300">{% else %}</li>
+    <li
+      class="flex justify-between p-5 bg-red-300"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
+      {% else %}
+    </li>
 
-    <li class="flex justify-between p-5 bg-gray-300">
+    <li
+      class="flex justify-between p-5 bg-gray-300"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% endif %}
       <div>
         <p>{{food["food_name"]}}</p>
@@ -40,15 +54,29 @@
   <!-- 냉동 물품 리스트 -->
   <ul id="freeze_list" style="display: none">
     {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
-    <li class="flex justify-between p-5">
+    <li
+      class="flex justify-between p-5"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% elif food["food_remained_date"] > 0 %}
     </li>
 
-    <li class="flex justify-between p-5" style="background-color: #e67d7d">
+    <li
+      class="flex justify-between p-5"
+      style="background-color: #e67d7d"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% else %}
     </li>
 
-    <li class="flex justify-between p-5" style="background-color: #bab8b8">
+    <li
+      class="flex justify-between p-5"
+      style="background-color: #bab8b8"
+      id="{{food['_id']}}"
+      onclick="detail(this.id)"
+    >
       {% endif %}
       <div>
         <p>{{food["food_name"]}}</p>
@@ -83,9 +111,13 @@
         <span id="detail-remained"></span>
       </p>
       <div class="grid grid-cols-3 text-xl">
-        <button class="text-3xl" id="btn-amount-minus">-</button>
+        <button class="text-3xl" id="minus" onclick="updateAmount(this.id)">
+          -
+        </button>
         <span id="detail-amount">클릭한 식료품 수량</span>
-        <button class="text-3xl" id="btn-amount-plus">+</button>
+        <button class="text-3xl" id="plus" onclick="updateAmount(this.id)">
+          +
+        </button>
       </div>
     </div>
     <div>
@@ -144,6 +176,20 @@
 
   function closeDetail() {
     $("#food-detail").addClass("hidden");
+  }
+
+  function updateAmount(id) {
+    let updateValue = $("#detail-amount").val();
+    if (id == "minus") {
+      updateValue < 0 ? deleteFood() : updateValue--;
+    }
+    if (id == "plus") {
+      updateValue++;
+    }
+
+    $.ajax({
+      // updateValue 전송
+    });
   }
 
   function deleteFood() {
