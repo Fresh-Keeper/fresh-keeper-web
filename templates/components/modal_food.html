@@ -1,6 +1,5 @@
 <div
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
-  id="food_modal"
 >
   <button class="w-full text-right text-3xl" onclick="closeModal()">x</button>
   <div class="px-10">
@@ -66,7 +65,8 @@
   var inputId = atob(window.location.pathname.split("/")[2]);
 
   function closeModal() {
-    $("#food_modal").removeClass("open");
+    var details = document.getElementById("show_food_modal");
+    details.removeAttribute("open");
   }
   function add_new_food() {
     // 입력된 데이터 가져오기

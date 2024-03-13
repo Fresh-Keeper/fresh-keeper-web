@@ -2,7 +2,9 @@
   id="keyword_modal"
   class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
-  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">x</button>
+  <button class="w-full text-right text-3xl" onclick="close_keyword_modal()">
+    x
+  </button>
   <div class="px-10">
     <div class="mt-2 flex gap-5">
       <input
@@ -27,13 +29,14 @@
 <script>
   // 현재 url에서 user_id 가져오기
   inputId = atob(window.location.pathname.split("/")[2]);
-  console.log(inputId)
+  console.log(inputId);
   // console.log("------------");
   $(document).ready(function () {
     show_keyword();
   });
   function close_keyword_modal() {
-    $("#keyword_modal").removeClass("open");
+    var details = document.getElementById("show_keyword_modal");
+    details.removeAttribute("open");
   }
 
   function add_keyword() {
@@ -48,10 +51,12 @@
       success: function (response) {
         if (response["result"] == 200) {
           alert("추가되었습니다.");
-          window.location.reload();}
+          window.location.reload();
+        }
         if (response["result"] != 200) {
           alert("이미 존재하는 키워드 입니다.");
-          window.location.reload();}
+          window.location.reload();
+        }
       },
     });
   }
@@ -60,11 +65,10 @@
     console.log(keyword);
     $.ajax({
       type: "POST",
-      url: '/keywords/delete',
-      data: { keyword_give: keyword,
-        user_id_give: inputId },
+      url: "/keywords/delete",
+      data: { keyword_give: keyword, user_id_give: inputId },
       success: function (response) {
-        if ((response["result"] == 200)) {
+        if (response["result"] == 200) {
           alert("삭제되었습니다.");
           window.location.reload();
         }
@@ -80,7 +84,7 @@
       url: "/keywords/show",
       data: { user_id_give: inputId },
       success: function (response) {
-        let show_keys = response["show_keys"]
+        let show_keys = response["show_keys"];
         console.log(show_keys);
         for (i = 0; i < show_keys.length; i++) {
           let keyword = show_keys[i]["keyword"];
