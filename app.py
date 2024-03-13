@@ -17,7 +17,7 @@ bcrypt = Bcrypt(app)
 # 로그인 페이지
 @app.route('/')
 def login():
-   return render_template('login.html')
+   return render_template('index.html')
    
 # [로그인 API]
 @app.route('/login', methods=['POST'])
@@ -105,7 +105,7 @@ def show_food_list():
    if(len(result)==0):
       return jsonify({'result': 400, 'food_list': result})
    else :    
-      return render_template('main.html', jsonify({'food_list': result}))
+      return render_template('main.html', userName=user_id_receive, food_list=result)
    
 
 #3 추천 리스트 api--------------------------------------------------------------
