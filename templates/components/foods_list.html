@@ -1,17 +1,48 @@
 <div class="bg-white rounded-md">
   <div class="text-left">
-    <button id="btn-refrigeration">냉장</button>
-    <button id="btn-freeze">냉동</button>
+    <button id="btn-refrigeration" onclick="show_refrigeration()">냉장</button>
+    <button id="btn-freeze" onclick="show_freeze()">냉동</button>
   </div>
   <hr />
-  <!--foods list-->
-  <ul>
+  <!-- 냉장 물품 리스트 -->
+  <ul id="refrigeration_list" style="display: none">
+    {%for food in cold_food_list%}
     <li class="flex justify-between p-5">
       <div>
-        <p>식료품 이름</p>
-        <p>구매 날짜</p>
+        <p>{{food["food_name"]}}</p>
+        <p>{{food["food_purchase_date"]}}</p>
       </div>
-      <div class="felx items-center">D-남은 소비 기한</div>
+      <div class="felx items-center">D-{{food["food_remained_date"]}}</div>
     </li>
+    <hr />
+    {%endfor%}
+  </ul>
+  <!-- 냉동 물품 리스트 -->
+  <ul id="freeze_list" style="display: none">
+    {%for food in frozed_food_list%}
+    <li class="flex justify-between p-5">
+      <div>
+        <p>{{food["food_name"]}}</p>
+        <p>{{food["food_purchase_date"]}}</p>
+      </div>
+      <div class="felx items-center">D-{{food["food_remained_date"]}}</div>
+    </li>
+    <hr />
+    {%endfor%}
   </ul>
 </div>
+
+<script>
+  $(document).ready(function () {
+    show_refrigeration();
+  });
+  function show_refrigeration() {
+    $("#refrigeration_list").show();
+    $("#freeze_list").hide();
+  }
+
+  function show_freeze() {
+    $("#refrigeration_list").hide();
+    $("#freeze_list").show();
+  }
+</script>
