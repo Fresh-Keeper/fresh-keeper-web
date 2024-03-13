@@ -28,8 +28,10 @@ def user_login():
    find_user = db.users.find_one({'user_id': id_receive})
    if not find_user:
       return jsonify({'error': 404})
-   ########################################### 에러
-   is_same = bcrypt.check_password_hash(find_user['user_pw'], pw_receive)
+
+   user_db_pw = find_user['user_pw']
+   decoded_user_db_pw = user_db_pw.decode("utf-8")
+   is_same = bcrypt.check_password_hash(decoded_user_db_pw, pw_receive)
    if not is_same:
       return jsonify({'error': 401})
 
@@ -46,16 +48,15 @@ def user_login():
 @app.route('/login/nick', methods=['GET'])
 def api_valid():
     token_receive = request.cookies.get('mytoken')
-
     try:
         # token을 시크릿키로 디코딩합니다.
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         print(payload)
-
         # payload 안에 id가 들어있습니다. 이 id로 유저정보를 찾습니다.
         # 여기에선 그 예로 닉네임을 보내주겠습니다.
-        userinfo = db.users.find_one({'user_id': payload['id']}, {'_id': 0})
+        userinfo = db.users.find_one({'user_id': payload['id']}, {'_id': 0,'user_nickname':1})
         return jsonify({'result': 'success', 'nickname': userinfo['user_nickname']})
+    
     except jwt.ExpiredSignatureError:
         # 위를 실행했는데 만료시간이 지났으면 에러가 납니다.
         return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
@@ -77,36 +78,15 @@ def upload_user():
    if is_dup_id:
       return jsonify({'error': 409})
    
-   ########################
    user_pw_hash = bcrypt.generate_password_hash(user_pw_receive)
-   # user_pw_hash = base64.b64decode(user_pw_hash).decode("utf-8")
-   new_user = {'user_id': user_id_receive, 'user_pw': str(user_pw_hash), 'user_nickname':user_nickname_receive}
+
+   new_user = {'user_id': user_id_receive, 'user_pw': user_pw_hash, 'user_nickname':user_nickname_receive}
    db.users.insert_one(new_user)
-   return jsonify({'result': 200})
-
-# 3-2 키워드 관리
-# 키워드 추가
-@app.route('/keywords/add', methods=['POST'])
-def add_keyword():
-   keyword_receive = request.form['keyword_give']
-   user_id_receive = request.form['user_id_give']
-   is_dup_keyword = list(db.keywords.find({'keyword': keyword_receive, 'user_id': user_id_receive}))
-   if is_dup_keyword:
-      return jsonify({'error': '이미 존재하는 키워드 요청'})
-   new_keyword = {'keyword': keyword_receive, 'user_id': user_id_receive}
-   db.keywords.insert_one(new_keyword)
-   return jsonify({'result': 200})
-
-# 키워드 삭제
-@app.route('/keywords/delete', methods=['POST'])
-def delete_keyword():
-   keyword_receive = request.form['keyword_give']
-   user_id_receive = request.form['user_id_give']
-   db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
-   return jsonify({'result': 200})
    
+   return jsonify({'result': 200})
+
 # 냉장고 페이지
-#3 물품 보여주는 api--------------------------------------------------------------------
+#3 물품 리스트 api--------------------------------------------------------------------
 @app.route('/refrigerator', methods=['POST'])
 def show_food_list():
 
@@ -128,7 +108,7 @@ def show_food_list():
       return render_template('main.html', jsonify({'food_list': result}))
    
 
-#3 추천 리스트 보여주는 api--------------------------------------------------------------
+#3 추천 리스트 api--------------------------------------------------------------
 @app.route('/keywords',methods=['POST'])
 def show_keyword_list():
 
@@ -165,8 +145,29 @@ def add_food():
    
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
+# 3-2 키워드 관리 ---------------------------------------------------------------------
+# 키워드 추가
+@app.route('/keywords/add', methods=['POST'])
+def add_keyword():
+   keyword_receive = request.form['keyword_give']
+   user_id_receive = request.form['user_id_give']
+   is_dup_keyword = list(db.keywords.find({'keyword': keyword_receive, 'user_id': user_id_receive}))
+   if is_dup_keyword:
+      return jsonify({'error': '이미 존재하는 키워드 요청'})
+   new_keyword = {'keyword': keyword_receive, 'user_id': user_id_receive}
+   db.keywords.insert_one(new_keyword)
+   return jsonify({'result': 200})
 
-# 3-3 물품 상세 정보
+# 키워드 삭제
+@app.route('/keywords/delete', methods=['POST'])
+def delete_keyword():
+   keyword_receive = request.form['keyword_give']
+   user_id_receive = request.form['user_id_give']
+   db.keywords.delete_one({'keyword': keyword_receive, 'user_id': user_id_receive})
+   return jsonify({'result': 200})
+   
+# 물품 api -------------------------------------------------------------------------
+# 3-3 물품 상세 정보 ---------------------------------------------------------------------
 @app.route('/foods/detail', methods=['POST'])
 def show_food_detail():
    food_id_receive = request.form['food_id_give'] 
@@ -180,13 +181,22 @@ def show_food_detail():
 
    return jsonify({'result': 200, 'food_detail': food_detail})
 
-# 물품 수량 증감 -> 클라이언트에서 기존 수량 증감해서 update_amount_give로 보냄 -> 서버에서는 해당 amount를 db에 update하기만 하도록 함.
+#4 물품 수량 증감 -> 클라이언트에서 기존 수량 증감해서 update_amount_give로 보냄 -> 서버에서는 해당 amount를 db에 update하기만 하도록 함.
 @app.route('/foods/detail/amount', methods=['PUT'])
 def update_food_amount():
    food_id_receive = request.form['food_id_give']
    update_amount_receive = request.form['update_amount_give']
 
    db.foods.update_one({'_id': ObjectId(food_id_receive)}, {'$set': {'food_amount': update_amount_receive}})
+   return jsonify({'result': 200})
+   
+
+#5 물품 삭제 api 
+@app.route('/foods/delete', methods=['POST'])
+def remove_food():
+   food_id_receive = request.form['food_id_give']
+
+   db.foods.delete_one({'_id': ObjectId(food_id_receive)})
    return jsonify({'result': 200})
    
 
