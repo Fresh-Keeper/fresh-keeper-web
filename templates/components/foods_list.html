@@ -1,31 +1,63 @@
 <div class="bg-white rounded-md">
-  <div class="text-left">
-    <button id="btn-refrigeration" onclick="show_refrigeration()">냉장</button>
-    <button id="btn-freeze" onclick="show_freeze()">냉동</button>
+  <div class="text-left flex">
+    <button
+      class="flex-1 box-border h-10 w-30 bg-lime-100 text-gray-300"
+      id="btn-refrigeration"
+      onclick="show_refrigeration()"
+    >
+      냉장
+    </button>
+    <button
+      class="flex-1 box-border h-10 w-30 bg-lime-100 text-gray-300"
+      id="btn-freeze"
+      onclick="show_freeze()"
+    >
+      냉동
+    </button>
   </div>
   <hr />
   <!-- 냉장 물품 리스트 -->
   <ul id="refrigeration_list" style="display: none">
-    {%for food in cold_food_list%}
+    {%for food in cold_food_list%} {% if food["food_remained_date"] > 3 %}
     <li class="flex justify-between p-5">
+      {% elif food["food_remained_date"] > 0 %}
+    </li>
+    <li class="flex justify-between p-5 bg-red-300">{% else %}</li>
+
+    <li class="flex justify-between p-5 bg-gray-300">
+      {% endif %}
       <div>
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
-      <div class="felx items-center">D-{{food["food_remained_date"]}}</div>
+      <div class="flex items-center justify-center">
+        D-{{food["food_remained_date"]}}
+      </div>
     </li>
     <hr />
     {%endfor%}
   </ul>
   <!-- 냉동 물품 리스트 -->
   <ul id="freeze_list" style="display: none">
-    {%for food in frozed_food_list%}
+    {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
     <li class="flex justify-between p-5">
+      {% elif food["food_remained_date"] > 0 %}
+    </li>
+
+    <li class="flex justify-between p-5" style="background-color: #e67d7d">
+      {% else %}
+    </li>
+
+    <li class="flex justify-between p-5" style="background-color: #bab8b8">
+      {% endif %}
+
       <div>
         <p>{{food["food_name"]}}</p>
         <p>{{food["food_purchase_date"]}}</p>
       </div>
-      <div class="felx items-center">D-{{food["food_remained_date"]}}</div>
+      <div class="flex items-center justify-center">
+        D-{{food["food_remained_date"]}}
+      </div>
     </li>
     <hr />
     {%endfor%}
@@ -39,10 +71,18 @@
   function show_refrigeration() {
     $("#refrigeration_list").show();
     $("#freeze_list").hide();
+    $("#btn-refrigeration").addClass("bg-lime-500");
+    $("#btn-freeze").removeClass("bg-lime-500");
+    $("#btn-refrigeration").addClass("text-white");
+    $("#btn-freeze").removeClass("text-white");
   }
 
   function show_freeze() {
     $("#refrigeration_list").hide();
     $("#freeze_list").show();
+    $("#btn-refrigeration").removeClass("bg-lime-500");
+    $("#btn-freeze").addClass("bg-lime-500");
+    $("#btn-refrigeration").removeClass("text-white");
+    $("#btn-freeze").addClass("text-white");
   }
 </script>
