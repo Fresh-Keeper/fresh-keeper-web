@@ -11,7 +11,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
     <div>
       <div class="grid grid-rows-2 gap-5 h-[20%] px-5 pt-5">
         <div>
-          <details class="">
+          <details id="show_food_modal" class="open">
             <!-- Button to be visible -->
             <summary
               class="bg-lime-500 text-white rounded-1xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
@@ -24,7 +24,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
           </details>
         </div>
         <div>
-          <details class="">
+          <details id="show_keyword_modal" class="open">
             <!-- Button to be visible -->
             <summary
               class="bg-lime-500 text-white rounded-1xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
