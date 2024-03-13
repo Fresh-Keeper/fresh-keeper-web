@@ -1,4 +1,4 @@
-<div class="bg-white rounded-md">
+<div class="bg-white rounded-md h-full" id="middle-box">
   <div class="text-left flex">
     <button
       class="flex-1 box-border h-10 w-30 bg-lime-100 text-gray-300"
@@ -17,7 +17,7 @@
   </div>
   <hr />
   <!-- 냉장 물품 리스트 -->
-  <ul id="refrigeration_list" style="display: none">
+  <ul id="refrigeration_list" class="overscroll-contain">
     {%for food in cold_food_list%} {% if food["food_remained_date"] > 3 %}
     <li
       class="flex justify-between p-5"
@@ -56,7 +56,7 @@
     {%endfor%}
   </ul>
   <!-- 냉동 물품 리스트 -->
-  <ul id="freeze_list" style="display: none">
+  <ul id="freeze_list">
     {%for food in frozed_food_list%} {% if food["food_remained_date"] > 3 %}
     <li
       class="flex justify-between p-5"
@@ -97,9 +97,9 @@
   </ul>
 </div>
 
-<div class="h-full flex justify-center items-center">
+<div class="h-full flex justify-center items-center py-[20%]" id="right-box">
   <div
-    class="bg-white mx-5 p-5 rounded-2xl h-[85%] w-full hidden"
+    class="bg-white mx-5 p-5 rounded-2xl h-full w-full hidden"
     id="food-detail"
   >
     <button class="w-full text-right text-3xl" onclick="closeDetail()">
@@ -142,16 +142,18 @@
     </div>
   </div>
 </div>
+
 <style>
-  .bg-white.rounded-md {
-    height: 85%; /* 부모 요소의 높이의 50%로 설정 */
+  #middle-box {
+    /* 다른 스타일 */
+    height: inherit; /* 부모 요소의 높이를 100%로 설정 */
   }
-  ul {
-    overflow-y: auto;
-    max-height: calc(100% - 10px); /* 스크롤이 표시될 최대 높이 설정 */
+
+  #middle-box ul {
+    overflow-y: auto; /* 수직 스크롤이 필요한 경우에만 스크롤 표시 */
+    max-height: 100%; /* 부모 요소의 높이의 50%로 최대 높이 설정 */
   }
 </style>
-
 <script>
   let food_id = null;
 
