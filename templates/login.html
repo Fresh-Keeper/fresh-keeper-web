@@ -98,8 +98,6 @@ block content %}
           },
         }).then((arg) => {
           if (isLoginSuccess) {
-            // console.log($.cookie("userToken"));
-            console.log(`Bearer ${$.cookie("userToken")}`);
             let requestId = btoa(inputId);
             $.ajax({
               type: "GET",
