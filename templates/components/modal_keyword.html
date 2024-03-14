@@ -1,6 +1,6 @@
 <div
   id="keyword_modal"
-  class="bg-white rounded-2xl w-[50%] h-[40%] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
+  class="bg-white rounded-2xl w-[50%] h-[40%] max-w-[600px] min-w-[500px] shadow-lg my-auto mx-auto absolute inset-0 text-gray-600 p-4"
 >
   <div class="px-10">
     <div class="mt-2 flex gap-5">
@@ -13,9 +13,9 @@
       <button class="text-basic" onclick="add_keyword()">등록</button>
     </div>
   </div>
-  <ul id="show_key" class="overflow-y-scroll h-[80%]"></ul>
+  <ul id="show_key" class="overflow-y-scroll h-[75%]"></ul>
   <button
-    class="w-full text-center text-basic text-xl"
+    class="w-[%70] rounded mx-auto mb-8 px-10 text-center text-basic text-xl text-white bg-lime-500 hover:bg-lime-600 hover:duration-300 cursor-pointer"
     onclick="close_keyword_modal()"
   >
     적용
@@ -24,8 +24,6 @@
 <script>
   // 현재 url에서 user_id 가져오기
   inputId = atob(window.location.pathname.split("/")[2]);
-  console.log(inputId);
-  // console.log("------------");
   $(document).ready(function () {
     show_keyword();
   });
@@ -37,6 +35,7 @@
 
   function add_keyword() {
     let inputKeyword = $("#food-id").val();
+    console.log(inputKeyword);
     if (inputKeyword === "") {
       alert("키워드를 입력해주세요.");
       return;
@@ -50,22 +49,20 @@
       },
       success: function (response) {
         if (response["result"] == 200) {
-          let temp_html = `<li class="flex justify-between mx-5 mt-1">
+          let temp_html = `<li class="flex justify-between mx-5 mt-1 px-5">
                             <span class="text-xl mt-4">${inputKeyword}</span>
-                            <button type="button" onclick="del_keyword class="keyword-item text-red-500 mt-4"('${inputKeyword}')">삭제</button>
+                            <button onclick="del_keyword('${inputKeyword}')" class="keyword-item text-red-500 mt-4">삭제</button>
                           </li>`;
           $("#show_key").append(temp_html);
         }
         if (response["result"] != 200) {
           alert("이미 존재하는 키워드 입니다.");
-          window.location.reload();
         }
       },
     });
   }
 
   function del_keyword(keyword) {
-    console.log(keyword);
     $.ajax({
       type: "POST",
       url: "/keywords/delete",
@@ -87,12 +84,11 @@
       data: { user_id_give: inputId },
       success: function (response) {
         let show_keys = response["show_keys"];
-        console.log(show_keys);
         for (i = 0; i < show_keys.length; i++) {
           let keyword = show_keys[i]["keyword"];
           let temp_html = `<li class="flex justify-between mx-5 mt-1 px-5">
                             <span class="text-xl mt-4">${keyword}</span>
-                            <button type="button" onclick="del_keyword('${keyword}')" class="keyword-item text-red-500 mt-4">삭제</button>
+                            <button onclick="del_keyword('${keyword}')" class="keyword-item text-red-500 mt-4">삭제</button>
                           </li>`;
           $("#show_key").append(temp_html);
         }

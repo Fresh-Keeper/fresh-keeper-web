@@ -10,19 +10,21 @@ head %} {{ super() }} {% endblock %} {% block content %}
     Log out
   </button>
   <header class="container mx-auto py-5">
-    <p class="text-center text-5xl font-bold text-basic">
+    <p class="text-center text-5xl font-bold text-basic m-10">
       {{userName}}의 냉장고
     </p>
   </header>
 
-  <div class="grid grid-cols-3 auto-rows-auto gap-5 h-[80%] text-center">
+  <div
+    class="grid grid-cols-3 auto-rows-auto gap-5 h-[80%] min-w-[1000px] text-center"
+  >
     <div id="left-box" class="h-[745px]">
       <div class="grid grid-rows-2 gap-5 h-[20%] px-5">
         <div>
           <details id="show_food_modal" class="open">
             <!-- Button to be visible -->
             <summary
-              class="bg-lime-500 text-white rounded-1xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
+              class="bg-lime-500 text-white rounded block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
             >
               식료품 추가
             </summary>
@@ -35,7 +37,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
           <details id="show_keyword_modal" class="open">
             <!-- Button to be visible -->
             <summary
-              class="bg-lime-500 text-white rounded-1xl block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
+              class="bg-lime-500 text-white rounded block px-6 py-4 text-xl hover:bg-dark hover:duration-300 cursor-pointer"
             >
               관리 키워드 설정
             </summary>
@@ -79,9 +81,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
     });
   }
   function logout() {
-    console.log("------");
     deleteCookie("userToken");
-    console.log("------2");
     $(location).attr("href", "/");
   }
 </script>

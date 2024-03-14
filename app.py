@@ -110,7 +110,6 @@ def show_food_list(user_id):
       # 또한 받은 str을 이용해서 ObjectId를 찾기 위해서는 ObjectId("문자열")이렇게 감싸줘야 한다.
       food['_id'] = str(food['_id'])
       cold_list.append(food) if food['food_category'] == "냉장" else freeze_list.append(food)
-   print("----------서버 냉장고----------")
    return render_template('main.html', userName=nickname, cold_food_list=cold_list, frozed_food_list=freeze_list)
 
 #3 추천 리스트 api--------------------------------------------------------------
@@ -149,7 +148,6 @@ def add_food():
          'food_category':food_category_receive,
          'user_id':user_id_receive
          }
-   print(food_purchase_date_receive)
    db.foods.insert_one(food)
    return jsonify({'result': 'success'})
 # 3-2 키워드 관리 ---------------------------------------------------------------------
