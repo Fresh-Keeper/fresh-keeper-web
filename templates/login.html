@@ -67,6 +67,7 @@ block content %}
   function login() {
     let inputId = $("#user-id").val();
     let inputPw = $("#user-pw").val();
+    let isLoginSuccess = false;
     if (loginInputValidate(inputId, inputPw)) {
       new Promise((resolve, reject) => {
         $.ajax({
@@ -79,58 +80,40 @@ block content %}
               $.cookie("userToken", response["token"]);
               //-----------------------
               $("#login-page").toggleClass("hidden");
+              isLoginSuccess = true;
             } else if (response["error"] == 404) {
               $("#user-id").css("border", "1px solid red");
-              let error = `<span style="color: red">존재하지 않는 아이디 입니다.<span>`;
+              let error = `<span style="color: red">존재하지 않는 아이디 입니다.</span>`;
+              $("#container-form").find("span").remove();
               $("#container-form").append(error);
             } else if (response["error"] == 401) {
               $("#user-pw").css("border", "1px solid red");
-              let error = `<span style="color: red">비밀번호가 일치하지 않습니다.<span>`;
+              let error = `<span style="color: red">비밀번호가 일치하지 않습니다.</span>`;
+              $("#container-form").find("span").remove();
               $("#container-form").append(error);
             }
           },
         }).then((arg) => {
-          // console.log($.cookie("userToken"));
-          console.log(`Bearer ${$.cookie("userToken")}`);
-          let requestId = btoa(inputId);
-          $.ajax({
-            type: "GET",
-            url: `/refrigerator/${requestId}`,
-            data: {},
-            headers: {
-              Authorization: `Bearer ${$.cookie("userToken")}`,
-            },
-            success: function (response) {
-              if (response["result"] == 401) {
-                console.log("-----------실패-------");
-
-                //$(location).attr("href", "/");
-              } else {
-                console.log("------------자바스크립트에서 페이지 변환-------");
-                // fetch(`/refrigerator/${requestId}`, {
-                //   method: "GET",
-                //   credentials: "include", // 요청에 쿠키를 포함하도록 설정
-                // })
-                //   .then((response) => {
-                //     if (!response.ok) {
-                //       throw new Error("Network response was not ok");
-                //     }
-                //     return response.json();
-                //   })
-                //   .then((data) => {
-                //     // 응답 데이터 처리
-                //     console.log(data);
-                //   })
-                //   .catch((error) => {
-                //     console.error(
-                //       "There was a problem with the fetch operation:",
-                //       error
-                //     );
-                //   });
-                $(location).attr("href", `/refrigerator/${requestId}`);
-              }
-            },
-          });
+          if (isLoginSuccess) {
+            // console.log($.cookie("userToken"));
+            console.log(`Bearer ${$.cookie("userToken")}`);
+            let requestId = btoa(inputId);
+            $.ajax({
+              type: "GET",
+              url: `/refrigerator/${requestId}`,
+              data: {},
+              headers: {
+                Authorization: `Bearer ${$.cookie("userToken")}`,
+              },
+              success: function (response) {
+                if (response["result"] == 401) {
+                } else {
+                  $(location).attr("href", `/refrigerator/${requestId}`);
+                }
+              },
+            });
+          } else {
+          }
         });
       });
     }

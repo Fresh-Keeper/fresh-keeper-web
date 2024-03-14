@@ -1,6 +1,14 @@
 {% extends "index.html" %} {% block title %}나의 냉장고{% endblock %} {% block
 head %} {{ super() }} {% endblock %} {% block content %}
 <div class="bg-background h-screen">
+  <button
+    id="logout-btn"
+    class="bg-transparent hover:bg-red-500 font-semibold hover:text-white py-2 px-4 hover:border-transparent rounded"
+    style="position: fixed; right: 30px; top: 20px"
+    onclick="logout()"
+  >
+    Log out
+  </button>
   <header class="container mx-auto py-5">
     <p class="text-center text-5xl font-bold text-basic">
       {{userName}}의 냉장고
@@ -42,4 +50,40 @@ head %} {{ super() }} {% endblock %} {% block content %}
     {% include 'components/foods_list.html' %}
   </div>
 </div>
+<script>
+  function setCookie(name, value, options = {}) {
+    options = {
+      path: "/",
+    };
+
+    if (options.expires instanceof Date) {
+      options.expires = options.expires.toUTCString();
+    }
+
+    let updatedCookie =
+      encodeURIComponent(name) + "=" + encodeURIComponent(value);
+
+    for (let optionKey in options) {
+      updatedCookie += "; " + optionKey;
+      let optionValue = options[optionKey];
+      if (optionValue !== true) {
+        updatedCookie += "=" + optionValue;
+      }
+    }
+
+    document.cookie = updatedCookie;
+  }
+  function deleteCookie(name) {
+    setCookie(name, "", {
+      "max-age": -1,
+    });
+  }
+  function logout() {
+    console.log("------");
+    deleteCookie("userToken");
+    console.log("------2");
+    $(location).attr("href", "/");
+  }
+</script>
+
 {% endblock %}
