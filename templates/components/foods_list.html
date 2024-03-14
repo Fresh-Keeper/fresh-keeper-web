@@ -193,12 +193,17 @@
           $("#detail-date").text(info.food_purchase_date);
           $("#detail-limit").text(info.food_limited_date);
 
-          if (info.food_remained_date >= 0) {
+          if (info.food_remained_date >= 3) {
             $("#detail-remained").text(`${info.food_remained_date}일 남음`);
+            $("#detail-remained").css("color", "black");
+          } else if (info.food_remained_date >= 0) {
+            $("#detail-remained").text(`${info.food_remained_date}일 남음`);
+            $("#detail-remained").css("color", "red");
           } else {
             $("#detail-remained").text(
               `${info.food_remained_date * -1}일 지남`
             );
+            $("#detail-remained").css("color", "grey");
           }
 
           $("#detail-amount").text(info.food_amount);

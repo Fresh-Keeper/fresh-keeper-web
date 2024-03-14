@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template,redirect
 from flask_bcrypt import Bcrypt
 
 import datetime, base64
@@ -28,11 +28,22 @@ bcrypt = Bcrypt(app)
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
-app.config['JWT_TOKEN_LOCATION'] = ['cookies','headers', 'query_string']
+app.config['JWT_TOKEN_LOCATION'] = ['cookies','headers','query_string']
 app.config['JWT_ACCESS_COOKIE_NAME'] = "userToken"
 
 jwt = JWTManager(app)
 jwt = JWTManager(app)
+
+# 토큰이 만료된 경우
+@jwt.expired_token_loader
+def my_expired_token_callback(expired_token):
+    # 만료된 토큰을 재발급하기 위한 URL로 리디렉션
+    return jsonify({'message': 'Token has expired', 'redirect_url': '/'})
+
+# 토큰 없거나 인증 불가능 한 경우 
+@jwt.unauthorized_loader
+def custom_unauthorized_response(_err):
+    return redirect("/")
 
 # 로그인 페이지
 @app.route('/')
